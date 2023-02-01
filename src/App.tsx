@@ -1,4 +1,3 @@
-import './App.css';
 import Console from "./components/Console";
 
 

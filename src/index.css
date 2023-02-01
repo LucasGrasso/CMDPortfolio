@@ -1,10 +1,4 @@
-@tailwind base;
-@tailwind components;
-@tailwind utilities;
-
-html, body{min-height: 100vh;}
-
-#root{min-height: 100vh;}
+html, body{scroll-behavior: smooth;}
 
 @font-face {
     font-family: 'DM Mono';
@@ -18,12 +12,16 @@ html, body{min-height: 100vh;}
 body {
     background-color: #0C0C0C;
     color: #AEAEAE;
-    overflow-y: scroll;
-    padding-bottom: 25px;
+    overflow-y: auto;
     font-family: "DM Mono", monospace;
+    font-size: clamp(0.7rem, 3.5vw, 1rem);
 }
 
-input[type="text"]{
+#root {
+    padding-bottom: 10%;
+}
+
+input[type="text"] {
     background-color: transparent;
     border: 0px;
     outline: none;
@@ -31,6 +29,8 @@ input[type="text"]{
     -moz-box-shadow: none;
     box-shadow: none;
     color: #AEAEAE;
+    font-family: "DM Mono", monospace;
+    font-size: clamp(0.7rem, 3.5vw, 1rem);
 }
 
 body::-webkit-scrollbar {
@@ -48,6 +48,53 @@ body::-webkit-scrollbar-track {
 }
 
 img {
-    max-height: 10%;
-    max-width: 10%;
+    height: 1rem;
+    width: 1rem;
+    border-radius: 1rem;
+}
+
+pre {
+    font-family: "DM Mono", monospace;
+    color:#AEAEAE;
+    font-size: clamp(0.7rem, 3.5vw, 1rem);
+}
+
+.project {
+    /* border-style: solid;
+    border-width: 0.1rem;
+    border-color: #AEAEAE;
+    border-radius: 0.5rem; */
+    padding: 1rem;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    gap: 0.5rem;
+}
+
+.row{
+    display: flex;
+    flex-direction: row;
+    justify-content: left;
+    align-items: center;
+}
+
+.wrapped {
+    display: block;
+    white-space: normal;
+}
+
+.text-error{
+    color: #E74856;
+}
+
+.text-command{
+    color: #F9F1A5;
+}
+
+.text-green{
+    color: #7BE748;
+}
+
+.text-blue{
+    color: #48C1E7;
 }
