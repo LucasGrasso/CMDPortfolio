@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import { banner, projectInfo } from '../constants';
 import { handleLinkClick } from '../Utils';
 import Project from './Project';
@@ -7,11 +7,37 @@ import TypedText from './TypedText';
 const Console: React.FC = () => {
   const [history, setHistory] = useState<string[]>(JSON.parse(localStorage.getItem('history') || '[]'));
   const [input, setInput] = useState('');
+  const [count, setCount] = useState(0);
+  const inputElement = useRef<HTMLInputElement>(null);
 
   useEffect(() => {
     localStorage.setItem('history', JSON.stringify(history));
     window.scrollTo(0, document.body.scrollHeight);
+    setCount(0)
   }, [history]);
+
+  const handleKeydown = (e : any) => {
+    const key = e.key; // "ArrowRight", "ArrowLeft", "ArrowUp", or "ArrowDown"
+    console.log(e);
+    if (key === "ArrowUp") {
+      if(count+1 > history.length) return;
+      setInput(history[history.length - (count + 1)]);
+      setCount(count + 1);
+    } else if (key === "ArrowDown") {
+      if(count-1 < 0) return;
+      setInput(history[history.length - (count - 1)]);
+      setCount(count - 1);
+    } else {
+      inputElement.current?.focus();
+    }
+  }
+
+  useEffect(() => {
+    window.addEventListener('keydown', handleKeydown);
+    return () => {
+      window.removeEventListener('keydown', handleKeydown);
+    }
+  }, [count, inputElement]);
   
   interface Command {
     [key: string]: () => string;
@@ -54,6 +80,7 @@ const Console: React.FC = () => {
   };
 
   const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
+    if(!input) return;
     e.preventDefault();
     const command = input.split(' ')[0];
     setHistory([...history, command]);
@@ -142,6 +169,7 @@ const Console: React.FC = () => {
           <input
             autoFocus
             className="ml-10 flex-grow-1 p-2 text-input-command"
+            ref={inputElement}
             type="text"
             value={input}
             onChange={(e) => setInput(e.target.value)}
