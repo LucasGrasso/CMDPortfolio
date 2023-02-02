@@ -58,6 +58,7 @@ const Console: React.FC = () => {
     'estudios': 'Mis Estudios',
     'fecha': 'Le dice la fecha',
     'clear': 'Limpia la consola',
+    'repo' : 'Link al repositorio de este proyecto',
   };
 
   const commands: Command = {
@@ -71,6 +72,7 @@ const Console: React.FC = () => {
     'github': () => 'Mi perfil de Github es: https://github.com/LucasGrasso',
     'fecha': () => new Date().toString(),
     'clear': () => {setHistory([]); return "" },
+    'repo': () => 'Link al repositorio de github: https://github.com/LucasGrasso/CMDPortfolio',
   };
 
   const getCommandDescriptions = () => {
