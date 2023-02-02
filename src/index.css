@@ -13,6 +13,7 @@ body {
     background-color: #0C0C0C;
     color: #AEAEAE;
     overflow-y: auto;
+    overflow-x: hidden;
     font-family: "DM Mono", monospace;
     font-size: clamp(0.7rem, 3.5vw, 1rem);
 }
