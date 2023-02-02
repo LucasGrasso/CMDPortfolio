@@ -48,23 +48,23 @@ const Console: React.FC = () => {
   }
 
   const commandDescriptions: CommandDescription = {
-    'help': 'Lista los comandos displonibles',
-    'greet': 'Lo saluda',
-    'quiensoy': 'Cuenta un poco sobre mi',
-    'proyectos': 'Muestra mis proyectos',
-    'contacto': 'Información de Contacto',
-    'linkedin': 'Mi perfil de LinkedIn',
-    'github': 'Mi perfil de GitHub',
-    'estudios': 'Mis Estudios',
-    'fecha': 'Le dice la fecha',
-    'clear': 'Limpia la consola',
-    'repo' : 'Repositorio de este proyecto',
+    'help': 'Lista los comandos displonibles.',
+    'greet': 'Lo saluda.',
+    'quiensoy': 'Cuenta un poco sobre mi.',
+    'proyectos': 'Muestra mis proyectos.',
+    'contacto': 'Información de Contacto.',
+    'linkedin': 'Mi perfil de LinkedIn.',
+    'github': 'Mi perfil de GitHub.',
+    'estudios': 'Mis Estudios.',
+    'fecha': 'Le dice la fecha.',
+    'clear': 'Limpia la consola.',
+    'repo' : 'Repositorio de este proyecto.',
   };
 
   const commands: Command = {
     'help': () => `help`,
-    'greet': () => 'Bienvenido a mi Portfolio Conceptual',
-    'quiensoy': () => 'Soy Lucas Grasso Ramos, Estudiante de Ciencias de Datos y desarrollador de Software. Me especializo en desarollo de Blockchain y en Python. #Solidity #Python',
+    'greet': () => 'Bienvenido a mi Portfolio Conceptual.',
+    'quiensoy': () => 'Soy Lucas Grasso Ramos, Estudiante de Ciencias de Datos y desarrollador de Software. Me especializo en desarollo de Blockchain y en Python. #Solidity #Python.',
     'proyectos': () => 'proyectos',
     'estudios': () => 'Estudiante de Ciencias de Datos en la Universidad De Buenos Aires (UBA), Facultad de Ciencias Exactas y Naturales. Egresado de ORT TIC (Tecnologias de la Información y la Comunicacion) 2022.',
     'contacto': () => 'Puedes contactarme a traves de mi correo electronico: lucasgrassoramos@gmail.com',
@@ -127,10 +127,13 @@ const Console: React.FC = () => {
               )
             default:
               if(!commands[command]) {
+                const result = `${command}: El término '${command}' no se reconoce como nombre de un cmdlet, función, archivo de script o
+                programa ejecutable. Compruebe si escribió correctamente el nombre o, si incluyó una ruta de acceso, compruebe que
+                dicha ruta es correcta e inténtelo de nuevo.`;
                 return(
                   <div>
                     <span>C:\Users\Guest&gt; <span className='text-command'>{command}</span></span>
-                    <TypedText key={i} text={"Comando Desconocido"} type="error"/>
+                    <TypedText key={i} text={result} type="error"/>
                   </div>
                 )
               } else if(typeof commands[command]() === 'string') {
