@@ -1,5 +1,5 @@
-import { ReactSVG } from "react-svg";
 import { projectInfo } from '../constants';
+import { handleLinkClick } from '../Utils';
 import TypedText from './TypedText';
 
 type Props = {
@@ -8,14 +8,19 @@ type Props = {
 
 export default function Project({ name }: Props) {
     if(!projectInfo[name]) return (<div></div>);
+
+    const project = projectInfo[name];
     return (
         <div className="project">
-            <ReactSVG src={projectInfo[name].image} beforeInjection={(svg) => {
+            {/* <ReactSVG src={project.image} beforeInjection={(svg) => {
                 svg.setAttribute('style', 'width: 10%; height: 10%;')
-            }}/>
-            <TypedText text={name}/>
-            <TypedText text={projectInfo[name].description}/>
-            <TypedText text={projectInfo[name].role}/>
+            }}/> */}
+            <TypedText text={name} type="title"/>
+            <TypedText text={project.description}/>
+            <TypedText text={project.role}/>
+            <div onClick={() => handleLinkClick(project.url)} className="hoverable-div">
+                <TypedText text={"Visitar Sitio web"} type="link"/>
+            </div>
         </div>
     );
 }

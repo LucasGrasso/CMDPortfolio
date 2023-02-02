@@ -18,7 +18,7 @@ body {
 }
 
 #root {
-    padding-bottom: 10%;
+    padding-bottom: 15%;
 }
 
 input[type="text"] {
@@ -64,11 +64,24 @@ pre {
     border-width: 0.1rem;
     border-color: #AEAEAE;
     border-radius: 0.5rem; */
-    padding: 1rem;
     display: flex;
     flex-direction: column;
     justify-content: center;
     gap: 0.5rem;
+    padding-bottom: 1rem;
+    padding-top: 0.5rem;
+}
+
+.project-container {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+}
+
+.help-container {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
 }
 
 .row{
@@ -83,8 +96,14 @@ pre {
     white-space: normal;
 }
 
+.hoverable-div {
+    cursor: pointer;
+}
+
 .text-error{
     color: #E74856;
+    display: block;
+    white-space: normal;
 }
 
 .text-command{
@@ -95,6 +114,30 @@ pre {
     color: #7BE748;
 }
 
+.text-input-command{
+    width: 100%;
+    outline: none;
+}
+
+.text-input-command:before{
+    color: #F9F1A5;
+    content: var(--command);
+}
+
 .text-blue{
     color: #48C1E7;
+}
+
+.text-link{
+    color: #48C1E7;
+    text-decoration: underline;
+    display: block;
+    white-space: normal;
+}
+
+.text-title {
+    font-weight: 600;
+    color: #AEAEAE;
+    display: block;
+    white-space: normal;
 }
