@@ -58,7 +58,7 @@ const Console: React.FC = () => {
     'estudios': 'Mis Estudios',
     'fecha': 'Le dice la fecha',
     'clear': 'Limpia la consola',
-    'repo' : 'Link al repositorio de este proyecto',
+    'repo' : 'Repositorio de este proyecto',
   };
 
   const commands: Command = {
