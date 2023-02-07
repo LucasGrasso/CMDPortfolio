@@ -2,18 +2,20 @@ import { TypeAnimation } from 'react-type-animation';
 import { Speed } from '../Utils';
 
 type Props = {
-  text : string
-  type ?: string 
-  speed ?: Speed
+  text: string
+  type?: string
+  speed?: Speed
+  callback?: () => void
 }
 
-const TypedText = ({text, type = "", speed = 75} : Props) => {
-  switch(type) {
+const TypedText = ({ text, type = "", speed = 75, callback = () => { } }: Props) => {
+  switch (type) {
     case "error":
       return (
         <TypeAnimation
           sequence={[
-            text,          
+            text,
+            callback,
           ]}
           wrapper="div"
           cursor={false}
@@ -21,12 +23,13 @@ const TypedText = ({text, type = "", speed = 75} : Props) => {
           speed={speed}
           className="text-error"
         />
-    );
+      );
     case "command":
       return (
         <TypeAnimation
           sequence={[
-            text,            
+            text,
+            callback,
           ]}
           wrapper="div"
           cursor={false}
@@ -40,6 +43,7 @@ const TypedText = ({text, type = "", speed = 75} : Props) => {
         <TypeAnimation
           sequence={[
             text,
+            callback,
           ]}
           wrapper="div"
           cursor={false}
@@ -53,6 +57,7 @@ const TypedText = ({text, type = "", speed = 75} : Props) => {
         <TypeAnimation
           sequence={[
             text,
+            callback,
           ]}
           wrapper="div"
           cursor={false}
@@ -65,7 +70,8 @@ const TypedText = ({text, type = "", speed = 75} : Props) => {
       return (
         <TypeAnimation
           sequence={[
-            text,   
+            text,
+            callback,
           ]}
           wrapper="div"
           cursor={false}
@@ -74,7 +80,7 @@ const TypedText = ({text, type = "", speed = 75} : Props) => {
           className="wrapped"
         />
       );
-    }
-  };
+  }
+};
 
 export default TypedText;

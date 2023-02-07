@@ -16,15 +16,17 @@ const Console: React.FC = () => {
     setCount(0)
   }, [history]);
 
-  const handleKeydown = (e : any) => {
+  const handleKeydown = (e: any) => {
     const key = e.key; // "ArrowRight", "ArrowLeft", "ArrowUp", or "ArrowDown"
     console.log(e);
     if (key === "ArrowUp") {
-      if(count+1 > history.length) return;
+      e.view.event.preventDefault();
+      if (count + 1 > history.length) return;
       setInput(history[history.length - (count + 1)]);
       setCount(count + 1);
     } else if (key === "ArrowDown") {
-      if(count-1 < 0) return;
+      e.view.event.preventDefault();
+      if (count - 1 < 0) return;
       setInput(history[history.length - (count - 1)]);
       setCount(count - 1);
     } else {
@@ -38,7 +40,7 @@ const Console: React.FC = () => {
       window.removeEventListener('keydown', handleKeydown);
     }
   }, [count, inputElement]);
-  
+
   interface Command {
     [key: string]: () => string;
   }
@@ -58,7 +60,7 @@ const Console: React.FC = () => {
     'estudios': 'Mis Estudios.',
     'fecha': 'Le dice la fecha.',
     'clear': 'Limpia la consola.',
-    'repo' : 'Repositorio de este proyecto.',
+    'repo': 'Repositorio de este proyecto.',
   };
 
   const commands: Command = {
@@ -71,7 +73,7 @@ const Console: React.FC = () => {
     'linkedin': () => 'Mi perfil de Linkedin es: https://www.linkedin.com/in/lucas-grasso-ramos/',
     'github': () => 'Mi perfil de Github es: https://github.com/LucasGrasso',
     'fecha': () => new Date().toString(),
-    'clear': () => {setHistory([]); return "" },
+    'clear': () => { setHistory([]); return "" },
     'repo': () => 'Link al repositorio de github: https://github.com/LucasGrasso/CMDPortfolio',
   };
 
@@ -82,7 +84,7 @@ const Console: React.FC = () => {
   };
 
   const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
-    if(!input) return;
+    if (!input) return;
     e.preventDefault();
     const command = input.split(' ')[0];
     setHistory([...history, command]);
@@ -91,9 +93,9 @@ const Console: React.FC = () => {
 
   return (
     <div className="mx-auto p-20 font-mono text-center sm:text-left" id='divConsole'>
-       <pre className="text-left font-mono">
+      <pre className="text-left font-mono">
         <p key="banner"> <span className="wrapped"><span className='text-green'>Lucas Grasso Ramos 1.0.0</span> - Made with <span className='text-blue'>React.js</span></span><span>{`\n ${banner} \n`}</span>type <span className='text-command'>"help"</span> for a list of commands</p>
-        {history.map((command : string, i : number) => {
+        {history.map((command: string, i: number) => {
           switch (command) {
             case "proyectos":
               return (
@@ -113,41 +115,42 @@ const Console: React.FC = () => {
                 <div>
                   <span>C:\Users\Guest&gt; <span className='text-command'>{command}</span></span>
                   <div className='help-container'>
-                    {getCommandDescriptions().map((commandWithInfo : string, i : number) => {
+                    {getCommandDescriptions().map((commandWithInfo: string, i: number) => {
                       const commandName = commandWithInfo.split(' - ')[0];
                       return (
                         <div className='row'>
-                          <TypedText key={i} text={`${commandName} `} type="command"/>
-                          <TypedText key={i} text={` -> ${commandDescriptions[commandName]}`}/>
+                          <TypedText key={i} text={`${commandName} `} type="command" />
+                          <TypedText key={i} text={` -> ${commandDescriptions[commandName]}`} />
                         </div>
-                      )})
+                      )
+                    })
                     }
                   </div>
                 </div>
               )
             default:
-              if(!commands[command]) {
+              if (!commands[command]) {
                 const result = `${command}: El término '${command}' no se reconoce como nombre de un cmdlet, función, archivo de script o
                 programa ejecutable. Compruebe si escribió correctamente el nombre o, si incluyó una ruta de acceso, compruebe que
                 dicha ruta es correcta e inténtelo de nuevo.`;
-                return(
+                return (
                   <div>
                     <span>C:\Users\Guest&gt; <span className='text-command'>{command}</span></span>
-                    <TypedText key={i} text={result} type="error"/>
+                    <TypedText key={i} text={result} type="error" />
                   </div>
                 )
-              } else if(typeof commands[command]() === 'string') {
+              } else if (typeof commands[command]() === 'string') {
                 const regex = /https?:\/\/[^\s]+/g;
-                const resultText : string = commands[command]();
+                const resultText: string = commands[command]();
                 const regexMatches = resultText.match(regex);
-                if(regexMatches) {
+                if (regexMatches) {
                   const link = regexMatches[0]
                   return (
                     <div>
                       <span>C:\Users\Guest&gt; <span className='text-command'>{command}</span></span>
-                      <TypedText key={i} text={resultText.split(link)[0]}/>
+                      <TypedText key={i} text={resultText.split(link)[0]} />
                       <div onClick={() => handleLinkClick(link)} className="hoverable-div">
-                        <TypedText key={i} text={link} type="link"/>
+                        <TypedText key={i} text={link} type="link" />
                       </div>
                     </div>
                   )
@@ -156,11 +159,11 @@ const Console: React.FC = () => {
                   return (
                     <div>
                       <span>C:\Users\Guest&gt; <span className='text-command'>{command}</span></span>
-                      <TypedText key={i} text={resultText}/>
+                      <TypedText key={i} text={resultText} />
                     </div>
                   )
                 }
-              } else if(typeof commands[command]() === 'function') {
+              } else if (typeof commands[command]() === 'function') {
                 return (
                   <span>C:\Users\Guest&gt; <span className='text-command'>{command}</span></span>
                 )
