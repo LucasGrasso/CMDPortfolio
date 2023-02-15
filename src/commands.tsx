@@ -8,7 +8,7 @@ interface CommandDescription {
 }
 
 const commandDescriptions: CommandDescription = {
-    'help': 'Lista los comandos displonibles.',
+    'help': 'Lista los comandos disponibles.',
     /* 'greet': 'Lo saluda.', */
     'info': 'Cuenta un poco sobre mi.',
     'proyectos': 'Muestra mis proyectos.',
