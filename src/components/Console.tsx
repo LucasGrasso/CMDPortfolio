@@ -1,7 +1,7 @@
 import React, { useEffect, useRef, useState } from 'react';
 import { commandDescriptions, commands, getCommandDescriptions } from '../commands';
 import { banner, getErrorMsg, projectInfo } from '../constants';
-import { handleLinkClick } from '../Utils';
+import { handleLinkClick } from '../utils/ConsoleUtils';
 import ExecutedCommandText from './ExecutedCommandText';
 import Project from './Project';
 import TypedText from './TypedText';
@@ -22,28 +22,29 @@ const Console: React.FC = () => {
     commands['clear'] = () => { setHistory([]); return "" };
   }, []);
 
-  const handleKeydown = (e: any) => {
+  const handleKeyDown = (e: any) => {
     const key = e.key; // "ArrowRight", "ArrowLeft", "ArrowUp", or "ArrowDown"
-    console.log(e);
-    if (key === "ArrowUp") {
+    const arrowUpPressed: boolean = key === "ArrowUp"
+    const arrowDownPressed: boolean = key === "ArrowDown"
+    if (arrowUpPressed && document.activeElement === inputElement.current) {
       e.view.event.preventDefault();
       if (count + 1 > history.length) return;
       setInput(history[history.length - (count + 1)]);
       setCount(count + 1);
-    } else if (key === "ArrowDown") {
+    } else if (arrowDownPressed && document.activeElement === inputElement.current) {
       e.view.event.preventDefault();
       if (count - 1 < 0) return;
       setInput(history[history.length - (count - 1)]);
       setCount(count - 1);
-    } else {
+    } else if (!arrowDownPressed && !arrowUpPressed) {
       inputElement.current?.focus();
     }
   }
 
   useEffect(() => {
-    window.addEventListener('keydown', handleKeydown);
+    window.addEventListener('keydown', handleKeyDown);
     return () => {
-      window.removeEventListener('keydown', handleKeydown);
+      window.removeEventListener('keydown', handleKeyDown);
     }
   }, [count, inputElement]);
 
