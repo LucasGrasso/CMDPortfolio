@@ -1,4 +1,4 @@
-import { projectInfo } from '../constants';
+import { projectInfo } from '../utils/constants';
 import { handleLinkClick } from '../utils/ConsoleUtils';
 import TypedText from './TypedText';
 

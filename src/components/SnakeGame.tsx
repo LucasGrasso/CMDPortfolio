@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
 import '../snake.css';
-import { snakeIsEating, snakeIsEatingItself, snakeIsOutOfBound } from '../utils/SnakeGameUtils';
+import { getNewSnakeHead, snakeIsEating, snakeIsEatingItself, snakeIsOutOfBound } from '../utils/SnakeGameUtils';
 import { Directions, Position, TableStateDict } from '../utils/SnakeTypes';
 import { getRandomPosition, getRandomPositionString, parsePosition, stringifyPosition } from '../utils/SnakeUtils';
 
@@ -12,27 +12,12 @@ type SnakeGameProps = {
 export default function SnakeGame({ width, height }: SnakeGameProps) {
     const [tableState, setTableState] = useState<TableStateDict>({} as TableStateDict);
     const [score, setScore] = useState<number>(0);
+    const [highScore, setHighScore] = useState<string>(JSON.parse(localStorage.getItem('highscore') || '0'));
+    const [originalHighScore, setOriginalHighScore] = useState<string>(JSON.parse(localStorage.getItem('highscore') || '0'));
     const [gameOver, setGameOver] = useState<boolean>(false);
     const [direction, setDirection] = useState<string>("");
     const [snakeState, setSnakeState] = useState<Position[]>([]);
     const [foodState, setFoodState] = useState<Position>({ x: 0, y: 0 });
-
-
-    /* let direction: string = ""
-    const setDirection = (newDirection: string) => {
-        direction = newDirection;
-    }
-
-    let snakeState: Position[] = [];
-    const setSnakeState = (newSnakeState: Position[]) => {
-        snakeState = newSnakeState;
-    }
-
-    let foodState: Position = { x: 0, y: 0 };
-    const setFoodState = (newFoodState: Position) => {
-        foodState = newFoodState;
-    } */
-
 
     const setInitialState = () => {
         const foodStartingPos: string = getRandomPositionString(width, height);
@@ -52,6 +37,7 @@ export default function SnakeGame({ width, height }: SnakeGameProps) {
 
     const handleKeyDown = (e: any) => {
         const pressedKey = e.key;
+        console.log('tick');
         if (pressedKey === Directions.UP && direction !== Directions.DOWN) {
             setDirection(Directions.UP);
             return;
@@ -73,30 +59,14 @@ export default function SnakeGame({ width, height }: SnakeGameProps) {
         }
     }
 
-    const getNewSnakeHead = (snake: Position[], direction: string): Position => {
-        if (!snake || snake.length === 0) return { x: 0, y: 0 };
-        const snakeHead = snake[0];
-        switch (direction) {
-            case Directions.UP:
-                return { x: snakeHead.x, y: snakeHead.y - 1 };
-            case Directions.DOWN:
-                return { x: snakeHead.x, y: snakeHead.y + 1 };
-            case Directions.LEFT:
-                return { x: snakeHead.x - 1, y: snakeHead.y };
-            case Directions.RIGHT:
-                return { x: snakeHead.x + 1, y: snakeHead.y };
-            default:
-                return { x: 0, y: 0 };
-        }
-    }
-
     const snakeEat = (snakeHead: Position) => {
-        console.log("snake is eating");
-        setFoodState(getRandomPosition(width, height));
+        const newFoodPosition: Position = getRandomPosition(width, height);
+        setFoodState(newFoodPosition);
         setScore(score + 1);
+        setSnakeState([snakeHead].concat(snakeState));
         setTableState({
             ...tableState,
-            [stringifyPosition(foodState)]: "food",
+            [stringifyPosition(newFoodPosition)]: "food",
             [stringifyPosition(snakeHead)]: "snake",
         });
     }
@@ -112,9 +82,7 @@ export default function SnakeGame({ width, height }: SnakeGameProps) {
             case Directions.UP:
                 const newSnakeHeadUp = getNewSnakeHead(snakeState, direction);
                 const newSnakeUp = [newSnakeHeadUp].concat(snakeState);
-
-                console.log("newSnakeUp", newSnakeUp);
-                setSnakeState(newSnakeUp);
+                setSnakeState(newSnakeUp.slice(0, - 1));
                 if (snakeIsEatingItself(newSnakeUp) || snakeIsOutOfBound(newSnakeHeadUp, width, height)) {
                     setGameOver(true);
                 }
@@ -122,6 +90,7 @@ export default function SnakeGame({ width, height }: SnakeGameProps) {
                     snakeEat(newSnakeHeadUp);
                 } else {
                     const newSnakeTail = newSnakeUp[newSnakeUp.length - 1];
+                    setSnakeState
                     setTableState({
                         ...tableState,
                         [stringifyPosition(newSnakeHeadUp)]: "snake",
@@ -133,7 +102,7 @@ export default function SnakeGame({ width, height }: SnakeGameProps) {
             case Directions.DOWN:
                 const newSnakeHeadDown = getNewSnakeHead(snakeState, direction);
                 const newSnakeDown = [newSnakeHeadDown].concat(snakeState);
-                setSnakeState(newSnakeDown);
+                setSnakeState(newSnakeDown.slice(0, - 1));
                 if (snakeIsEatingItself(newSnakeDown) || snakeIsOutOfBound(newSnakeHeadDown, width, height)) {
                     setGameOver(true);
                 }
@@ -152,7 +121,7 @@ export default function SnakeGame({ width, height }: SnakeGameProps) {
             case Directions.LEFT:
                 const newSnakeHeadLeft = getNewSnakeHead(snakeState, direction);
                 const newSnakeLeft = [newSnakeHeadLeft].concat(snakeState);
-                setSnakeState(newSnakeLeft);
+                setSnakeState(newSnakeLeft.slice(0, - 1));
                 if (snakeIsEatingItself(newSnakeLeft) || snakeIsOutOfBound(newSnakeHeadLeft, width, height)) {
                     setGameOver(true);
                 }
@@ -171,7 +140,7 @@ export default function SnakeGame({ width, height }: SnakeGameProps) {
             case Directions.RIGHT:
                 const newSnakeHeadRight = getNewSnakeHead(snakeState, direction);
                 const newSnakeRight = [newSnakeHeadRight].concat(snakeState);
-                setSnakeState(newSnakeRight);
+                setSnakeState(newSnakeRight.slice(0, - 1));
                 if (snakeIsEatingItself(newSnakeRight) || snakeIsOutOfBound(newSnakeHeadRight, width, height)) {
                     setGameOver(true);
                 }
@@ -193,33 +162,51 @@ export default function SnakeGame({ width, height }: SnakeGameProps) {
     }
 
     useEffect(() => {
-        const tick = setInterval(updateGame, 250);
+        const tick = setInterval(updateGame, 100);
+        return () => {
+            clearInterval(tick);
+        }
+    }, [direction, tableState]);
+
+    useEffect(() => {
         setInitialState();
         window.addEventListener('keydown', handleKeyDown);
         return () => {
             window.removeEventListener('keydown', handleKeyDown);
-            clearInterval(tick);
         }
-
     }, []);
 
     useEffect(() => {
         console.log("foodState", foodState);
     }, [foodState]);
 
+    useEffect(() => {
+        const highScoreInt: number = parseInt(highScore);
+        if (score > highScoreInt) {
+            setHighScore(score.toString());
+        }
+        if (gameOver) {
+            localStorage.setItem('highscore', JSON.stringify(highScore));
+        }
+    }, [gameOver, score]);
+
 
     return (
         <div>
             {
-                gameOver ? (<div>
-                    <h1>Game Over</h1>
-                    <h3>Score: {score}</h3>
-                </div>) : (
+                gameOver ? (
+                    <div className='flex-col'>
+                        <h1 className='text-error'>Game Over</h1>
+                        <h3>Score: {score}</h3>
+                        {score > parseInt(originalHighScore) && <h4 className='text-green'>¡Nuevo Record!</h4>}
+                        <h3>High Score: {highScore}</h3>
+                    </div>
+                ) : (
                     <div className='snake-container' key="snake-container">
                         <div className="cols" key="cols">
                             {[...Array(width)].map((_, j) => {
                                 return (
-                                    <div className="row" key={j}>
+                                    <div className="flex-row" key={j}>
                                         {[...Array(height)].map((_, i) => {
                                             const key = `${i},${j}`;
                                             return (
@@ -230,7 +217,10 @@ export default function SnakeGame({ width, height }: SnakeGameProps) {
                                 );
                             })}
                         </div>
-                        <span>Score: {score}</span>
+                        <div className='flex flex-col'>
+                            <span>Score: {score}</span>
+                            <span>High Score: {highScore}</span>
+                        </div>
                     </div>
                 )
             }
