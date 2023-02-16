@@ -1,5 +1,5 @@
 import { TypeAnimation } from 'react-type-animation';
-import { Speed } from '../Utils';
+import { Speed } from '../utils/ConsoleUtils';
 
 type Props = {
   text: string

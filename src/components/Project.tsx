@@ -1,5 +1,5 @@
-import { projectInfo } from '../constants';
-import { handleLinkClick } from '../Utils';
+import { projectInfo } from '../utils/constants';
+import { handleLinkClick } from '../utils/ConsoleUtils';
 import TypedText from './TypedText';
 
 type Props = {

@@ -1,13 +1,14 @@
 import React, { useEffect, useRef, useState } from 'react';
-import { commandDescriptions, commands, getCommandDescriptions } from '../commands';
-import { banner, getErrorMsg, projectInfo } from '../constants';
-import { handleLinkClick } from '../Utils';
+import { commandDescriptions, commands, getCommandDescriptions } from '../utils/commands';
+import { handleLinkClick } from '../utils/ConsoleUtils';
+import { banner, getErrorMsg, projectInfo } from '../utils/constants';
 import ExecutedCommandText from './ExecutedCommandText';
 import Project from './Project';
+import SnakeGame from './SnakeGame';
 import TypedText from './TypedText';
 
 const Console: React.FC = () => {
-  const [history, setHistory] = useState<string[]>(JSON.parse(localStorage.getItem('history') || '[]'));
+  const [history, setHistory] = useState<string[]>(JSON.parse(localStorage.getItem('history') || '[]').filter((i: string) => i !== 'snake'));
   const [input, setInput] = useState('');
   const [count, setCount] = useState(0);
   const inputElement = useRef<HTMLInputElement>(null);
@@ -22,28 +23,29 @@ const Console: React.FC = () => {
     commands['clear'] = () => { setHistory([]); return "" };
   }, []);
 
-  const handleKeydown = (e: any) => {
+  const handleKeyDown = (e: any) => {
     const key = e.key; // "ArrowRight", "ArrowLeft", "ArrowUp", or "ArrowDown"
-    console.log(e);
-    if (key === "ArrowUp") {
+    const arrowUpPressed: boolean = key === "ArrowUp"
+    const arrowDownPressed: boolean = key === "ArrowDown"
+    if (arrowUpPressed && document.activeElement === inputElement.current) {
       e.view.event.preventDefault();
       if (count + 1 > history.length) return;
       setInput(history[history.length - (count + 1)]);
       setCount(count + 1);
-    } else if (key === "ArrowDown") {
+    } else if (arrowDownPressed && document.activeElement === inputElement.current) {
       e.view.event.preventDefault();
       if (count - 1 < 0) return;
       setInput(history[history.length - (count - 1)]);
       setCount(count - 1);
-    } else {
+    } else if (!arrowDownPressed && !arrowUpPressed) {
       inputElement.current?.focus();
     }
   }
 
   useEffect(() => {
-    window.addEventListener('keydown', handleKeydown);
+    window.addEventListener('keydown', handleKeyDown);
     return () => {
-      window.removeEventListener('keydown', handleKeydown);
+      window.removeEventListener('keydown', handleKeyDown);
     }
   }, [count, inputElement]);
 
@@ -74,6 +76,13 @@ const Console: React.FC = () => {
                   </div>
                 </div>
               )
+            case 'snake':
+              return (
+                <div>
+                  <ExecutedCommandText text={command} type="command" />
+                  <SnakeGame width={10} height={10} />
+                </div>
+              )
             case "help":
               return (
                 <div>
@@ -82,7 +91,7 @@ const Console: React.FC = () => {
                     {getCommandDescriptions().map((commandWithInfo: string, i: number) => {
                       const commandName = commandWithInfo.split(' - ')[0];
                       return (
-                        <div className='row'>
+                        <div className='flex-row'>
                           <TypedText key={i} text={`${commandName} `} type="command" />
                           <TypedText key={i} text={` -> ${commandDescriptions[commandName]}`} />
                         </div>
@@ -139,7 +148,7 @@ const Console: React.FC = () => {
         })}
       </pre>
       <form onSubmit={handleSubmit}>
-        <div className="flex items-center mb-10 row">
+        <div className="flex items-center mb-10 flex-row">
           <ExecutedCommandText type="default" />
           <input
             autoFocus
