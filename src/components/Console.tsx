@@ -4,7 +4,6 @@ import { handleLinkClick } from '../utils/ConsoleUtils';
 import { banner, getErrorMsg, projectInfo } from '../utils/constants';
 import ExecutedCommandText from './ExecutedCommandText';
 import Project from './Project';
-import SnakeGame from './SnakeGame';
 import TypedText from './TypedText';
 
 const Console: React.FC = () => {
@@ -74,13 +73,6 @@ const Console: React.FC = () => {
                       })
                     }
                   </div>
-                </div>
-              )
-            case 'snake':
-              return (
-                <div>
-                  <ExecutedCommandText text={command} type="command" />
-                  <SnakeGame width={10} height={10} />
                 </div>
               )
             case "help":
