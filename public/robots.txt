@@ -1,0 +1,4 @@
+# https://www.robotstxt.org/robotstxt.html
+Sitemap: https://cmd.lucasgrasso.com.ar/sitemap.xml
+User-agent: *
+Disallow:
