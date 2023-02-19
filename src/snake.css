@@ -1,0 +1,22 @@
+.cell-empty {
+    width: 20px;
+    height: 20px;
+    border: 1px solid white;
+    display: inline-block;
+}
+
+.cell-food {
+    width: 20px;
+    height: 20px;
+    border: 1px solid white;
+    display: inline-block;
+    background-color: #E74856;
+}
+
+.cell-snake {
+    width: 20px;
+    height: 20px;
+    border: 1px solid white;
+    display: inline-block;
+    background-color: #48C1E7;
+}
