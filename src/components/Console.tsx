@@ -4,6 +4,7 @@ import { handleLinkClick } from '../utils/ConsoleUtils';
 import { banner, getErrorMsg, projectInfo } from '../utils/constants';
 import ExecutedCommandText from './ExecutedCommandText';
 import Project from './Project';
+import SnakeGame from './SnakeGame';
 import TypedText from './TypedText';
 
 const Console: React.FC = () => {
@@ -26,6 +27,9 @@ const Console: React.FC = () => {
     const key = e.key; // "ArrowRight", "ArrowLeft", "ArrowUp", or "ArrowDown"
     const arrowUpPressed: boolean = key === "ArrowUp"
     const arrowDownPressed: boolean = key === "ArrowDown"
+    const arrowLeftPressed: boolean = key === "ArrowLeft"
+    const arrowRightPressed: boolean = key === "ArrowRight"
+    const enterPressed: boolean = key === "Enter"
     if (arrowUpPressed && document.activeElement === inputElement.current) {
       e.view.event.preventDefault();
       if (count + 1 > history.length) return;
@@ -36,7 +40,7 @@ const Console: React.FC = () => {
       if (count - 1 < 0) return;
       setInput(history[history.length - (count - 1)]);
       setCount(count - 1);
-    } else if (!arrowDownPressed && !arrowUpPressed) {
+    } else if (!arrowDownPressed && !arrowUpPressed && !arrowLeftPressed && !arrowRightPressed && !enterPressed) {
       inputElement.current?.focus();
     }
   }
@@ -73,6 +77,15 @@ const Console: React.FC = () => {
                       })
                     }
                   </div>
+                </div>
+              )
+            case 'snake':
+              window.scrollTo(0, document.body.scrollHeight);
+              inputElement.current?.blur();
+              return (
+                <div>
+                  <ExecutedCommandText text={command} type="command" />
+                  <SnakeGame width={10} height={10} />
                 </div>
               )
             case "help":

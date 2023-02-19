@@ -16,7 +16,7 @@ const commandDescriptions: CommandDescription = {
     'linkedin': 'Mi perfil de LinkedIn.',
     'github': 'Mi perfil de GitHub.',
     'estudios': 'Mis Estudios.',
-    'snake': 'Juega al clásico juego de la serpiente.',
+    'snake': 'Juego de la serpiente.',
     'date': 'Le dice la fecha.',
     'clear': 'Limpia la consola.',
     'repo': 'Repositorio de este proyecto.',
@@ -32,7 +32,7 @@ const commands: Command = {
     'linkedin': () => 'Mi perfil de Linkedin es: https://www.linkedin.com/in/lucas-grasso-ramos/',
     'github': () => 'Mi perfil de Github es: https://github.com/LucasGrasso',
     'date': () => new Date().toString(),
-    'snake': () => 'https://snake.lucasgrasso.com.ar/',
+    'snake': () => 'snake',
     'clear': () => 'clear',
     'repo': () => 'Link al repositorio de github: https://github.com/LucasGrasso/CMDPortfolio',
 };
