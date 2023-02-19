@@ -68,12 +68,12 @@ const Console: React.FC = () => {
           switch (command) {
             case "proyectos":
               return (
-                <div>
+                <div key={i}>
                   <ExecutedCommandText text={command} type="command" />
                   <div className='project-container'>
                     {
-                      Object.keys(projectInfo).map((project, i) => {
-                        return <Project key={i} name={project} />
+                      Object.keys(projectInfo).map((projectName: string, j: number) => {
+                        return <Project key={`project.${j}`} name={projectName} />
                       })
                     }
                   </div>
@@ -81,24 +81,26 @@ const Console: React.FC = () => {
               )
             case 'snake':
               window.scrollTo(0, document.body.scrollHeight);
-              inputElement.current?.blur();
+              if (window.innerWidth > 768) {
+                inputElement.current?.blur();
+              }
               return (
-                <div>
+                <div key={i}>
                   <ExecutedCommandText text={command} type="command" />
                   <SnakeGame width={10} height={10} />
                 </div>
               )
             case "help":
               return (
-                <div>
-                  <ExecutedCommandText text={command} type="command" />
-                  <div className='help-container'>
-                    {getCommandDescriptions().map((commandWithInfo: string, i: number) => {
+                <div key={i}>
+                  <ExecutedCommandText key={`cmd.${i}`} text={command} type="command" />
+                  <div className='help-container' key={`help.${i}`}>
+                    {getCommandDescriptions().map((commandWithInfo: string, j: number) => {
                       const commandName = commandWithInfo.split(' - ')[0];
                       return (
-                        <div className='flex-row'>
-                          <TypedText key={i} text={`${commandName} `} type="command" />
-                          <TypedText key={i} text={` -> ${commandDescriptions[commandName]}`} />
+                        <div className='flex-row' key={`cmd.${i}.${j}`}>
+                          <TypedText key={`cmd.name.${i}.${j}`} text={`${commandName} `} type="command" />
+                          <TypedText key={`cmd.description.${i}.${j}`} text={` -> ${commandDescriptions[commandName]}`} />
                         </div>
                       )
                     })
@@ -110,9 +112,9 @@ const Console: React.FC = () => {
               if (!commands[command]) {
                 const errorMsg = getErrorMsg(command);
                 return (
-                  <div>
+                  <div key={i}>
                     <ExecutedCommandText text={command} type="command" />
-                    <TypedText key={i} text={errorMsg} type="error" speed={85} />
+                    <TypedText text={errorMsg} type="error" speed={85} />
                   </div>
                 )
               } else if (typeof commands[command]() === 'string') {
@@ -122,23 +124,23 @@ const Console: React.FC = () => {
                 if (regexMatches) {
                   const link = regexMatches[0]
                   return (
-                    <div>
+                    <div key={i}>
                       <ExecutedCommandText text={command} type="command" />
-                      <TypedText key={i} text={resultText.split(link)[0]} />
+                      <TypedText text={resultText.split(link)[0]} />
                       <div onClick={() => handleLinkClick(link)} className="hoverable-div">
-                        <TypedText key={i} text={link} type="link" />
+                        <TypedText text={link} type="link" />
                       </div>
                     </div>
                   )
                 }
                 else {
                   return (
-                    <div>
+                    <div key={i}>
                       <ExecutedCommandText text={command} type="command" />
                       {resultText.length > 250 ? (
-                        <TypedText key={i} text={resultText} speed={80} />
+                        <TypedText text={resultText} speed={80} />
                       ) : (
-                        <TypedText key={i} text={resultText} />
+                        <TypedText text={resultText} />
                       )
                       }
                     </div>

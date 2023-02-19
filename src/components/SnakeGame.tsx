@@ -171,9 +171,7 @@ export default function SnakeGame({ width, height }: SnakeGameProps) {
     useEffect(() => {
         setInitialState();
         window.addEventListener('keydown', handleKeyDown);
-        const root: HTMLElement = document.getElementById('root')!;
-        if (!root) return;
-        disableBodyScroll(root);
+        disableBodyScroll(document.getElementById('divConsole')!);
         return () => {
             window.removeEventListener('keydown', handleKeyDown);
         }
@@ -185,16 +183,60 @@ export default function SnakeGame({ width, height }: SnakeGameProps) {
             setHighScore(score.toString());
         }
         if (gameOver) {
-            const root: HTMLElement = document.getElementById('root')!;
-            if (!root) return;
-            enableBodyScroll(root);
+            enableBodyScroll(document.getElementById('divConsole')!);
             localStorage.setItem('highscore', JSON.stringify(highScore));
         }
     }, [gameOver, score]);
 
 
+    const [touchStartX, setTouchStartX] = useState<number>(0)
+    const [touchEndX, setTouchEndX] = useState<number>(0)
+    const [touchStartY, setTouchStartY] = useState<number>(0)
+    const [touchEndY, setTouchEndY] = useState<number>(0)
+
+
+    // the required distance between touchStart and touchEnd to be detected as a swipe
+    const minSwipeDistance = 20
+
+    const onTouchStart = (e: React.TouchEvent<HTMLDivElement>) => {
+        e.preventDefault()
+        e.stopPropagation()
+        setTouchEndX(0) // otherwise the swipe is fired even with usual touch events
+        setTouchEndY(0)
+        setTouchStartX(e.targetTouches[0].clientX)
+        setTouchStartY(e.targetTouches[0].clientY)
+    }
+
+    const onTouchMove = (e: React.TouchEvent<HTMLDivElement>) => {
+        e.preventDefault()
+        e.stopPropagation()
+        setTouchEndX(e.targetTouches[0].clientX)
+        setTouchEndY(e.targetTouches[0].clientY)
+    }
+
+    const onTouchEnd = (e: React.TouchEvent<HTMLDivElement>) => {
+        e.preventDefault()
+        if (!touchStartX || !touchEndX || !touchStartY || !touchEndY) return
+        const distanceX = touchStartX - touchEndX
+        const isLeftSwipe = distanceX > minSwipeDistance
+        const isRightSwipe = distanceX < -minSwipeDistance
+        const distanceY = touchStartY - touchEndY
+        const isUpSwipe = distanceY > minSwipeDistance
+        const isDownSwipe = distanceY < -minSwipeDistance
+        if (!isLeftSwipe && !isRightSwipe && !isUpSwipe && !isDownSwipe) return
+        if (isLeftSwipe && direction !== Directions.RIGHT) {
+            setDirection(Directions.LEFT);
+        } else if (isRightSwipe && direction !== Directions.LEFT) {
+            setDirection(Directions.RIGHT);
+        } else if (isUpSwipe && direction !== Directions.DOWN) {
+            setDirection(Directions.UP);
+        } else if (isDownSwipe && direction !== Directions.UP) {
+            setDirection(Directions.DOWN);
+        }
+    }
+
     return (
-        <div>
+        <div onTouchStart={(e: React.TouchEvent<HTMLDivElement>) => { onTouchStart(e) }} onTouchMove={(e: React.TouchEvent<HTMLDivElement>) => { onTouchMove(e) }} onTouchEnd={(e: React.TouchEvent<HTMLDivElement>) => { onTouchEnd(e) }}>
             {
                 gameOver ? (
                     <div className='flex-col'>
