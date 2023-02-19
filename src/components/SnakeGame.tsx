@@ -1,3 +1,4 @@
+import { disableBodyScroll, enableBodyScroll } from 'body-scroll-lock';
 import { useEffect, useState } from 'react';
 import '../snake.css';
 import { getNewSnakeHead, snakeIsEating, snakeIsEatingItself, snakeIsOutOfBound } from '../utils/SnakeGameUtils';
@@ -37,7 +38,6 @@ export default function SnakeGame({ width, height }: SnakeGameProps) {
 
     const handleKeyDown = (e: any) => {
         const pressedKey = e.key;
-        console.log('tick');
         if (pressedKey === Directions.UP && direction !== Directions.DOWN) {
             setDirection(Directions.UP);
             return;
@@ -171,14 +171,13 @@ export default function SnakeGame({ width, height }: SnakeGameProps) {
     useEffect(() => {
         setInitialState();
         window.addEventListener('keydown', handleKeyDown);
+        const root: HTMLElement = document.getElementById('root')!;
+        if (!root) return;
+        disableBodyScroll(root);
         return () => {
             window.removeEventListener('keydown', handleKeyDown);
         }
     }, []);
-
-    useEffect(() => {
-        console.log("foodState", foodState);
-    }, [foodState]);
 
     useEffect(() => {
         const highScoreInt: number = parseInt(highScore);
@@ -186,6 +185,9 @@ export default function SnakeGame({ width, height }: SnakeGameProps) {
             setHighScore(score.toString());
         }
         if (gameOver) {
+            const root: HTMLElement = document.getElementById('root')!;
+            if (!root) return;
+            enableBodyScroll(root);
             localStorage.setItem('highscore', JSON.stringify(highScore));
         }
     }, [gameOver, score]);
