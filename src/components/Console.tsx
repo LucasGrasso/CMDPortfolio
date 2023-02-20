@@ -8,13 +8,25 @@ import SnakeGame from './SnakeGame';
 import TypedText from './TypedText';
 
 const Console: React.FC = () => {
-  const [history, setHistory] = useState<string[]>(JSON.parse(localStorage.getItem('history') || '[]').filter((i: string) => i !== 'snake'));
+  interface HistoryText {
+    value: string,
+    shouldBeTyped: boolean
+  }
+  const [history, setHistory] = useState<HistoryText[]>(JSON.parse(localStorage.getItem('history') || '[]').filter((i: string) => i !== 'snake'));
   const [input, setInput] = useState('');
   const [count, setCount] = useState(0);
   const inputElement = useRef<HTMLInputElement>(null);
 
   useEffect(() => {
-    localStorage.setItem('history', JSON.stringify(history));
+    const newHistory = history.map(
+      (command: HistoryText) => {
+        if (command.value === 'snake') {
+          return {}
+        }
+        return { value: command.value, shouldBeTyped: false }
+      }
+    )
+    localStorage.setItem('history', JSON.stringify(newHistory));
     window.scrollTo(0, document.body.scrollHeight);
     setCount(0)
   }, [history]);
@@ -33,12 +45,12 @@ const Console: React.FC = () => {
     if (arrowUpPressed && document.activeElement === inputElement.current) {
       e.view.event.preventDefault();
       if (count + 1 > history.length) return;
-      setInput(history[history.length - (count + 1)]);
+      setInput(history[history.length - (count + 1)].value);
       setCount(count + 1);
     } else if (arrowDownPressed && document.activeElement === inputElement.current) {
       e.view.event.preventDefault();
       if (count - 1 < 0) return;
-      setInput(history[history.length - (count - 1)]);
+      setInput(history[history.length - (count - 1)].value);
       setCount(count - 1);
     } else if (!arrowDownPressed && !arrowUpPressed && !arrowLeftPressed && !arrowRightPressed && !enterPressed) {
       inputElement.current?.focus();
@@ -56,7 +68,7 @@ const Console: React.FC = () => {
     if (!input) return;
     e.preventDefault();
     const command = input.split(' ')[0];
-    setHistory([...history, command]);
+    setHistory([...history, { value: input, shouldBeTyped: true }]);
     setInput('');
   };
 
@@ -80,16 +92,16 @@ const Console: React.FC = () => {
     <div className="mx-auto p-20 font-mono text-center sm:text-left" id='divConsole'>
       <pre className="text-left font-mono">
         <p key="banner"> <span className="wrapped"><span className='text-green'>Lucas Grasso Ramos 1.0.0</span> - Made with <span className='text-blue'>React.js</span></span><span>{`\n ${banner} \n`}</span>type <span className='text-command'>"help"</span> for a list of commands</p>
-        {history.map((command: string, i: number) => {
-          switch (command) {
+        {history.map((command: HistoryText, i: number) => {
+          switch (command.value) {
             case "proyectos":
               return (
                 <div key={i}>
-                  <ExecutedCommandText text={command} type="command" />
+                  <ExecutedCommandText text={command.value} type="command" />
                   <div className='project-container'>
                     {
                       Object.keys(projectInfo).map((projectName: string, j: number) => {
-                        return <Project key={`project.${j}`} name={projectName} />
+                        return <Project key={`project.${j}`} name={projectName} shouldBeTyped={command.shouldBeTyped} />
                       })
                     }
                   </div>
@@ -108,65 +120,104 @@ const Console: React.FC = () => {
               }
               return (
                 <div key={i}>
-                  <ExecutedCommandText text={command} type="command" />
+                  <ExecutedCommandText text={command.value} type="command" />
                   <SnakeGame width={10} height={10} startGameCallback={startGameCallback} endGameCallback={endGameCallback} />
                 </div>
               )
             case "help":
               return (
                 <div key={i}>
-                  <ExecutedCommandText key={`cmd.${i}`} text={command} type="command" />
+                  <ExecutedCommandText key={`cmd.${i}`} text={command.value} type="command" />
                   <div className='help-container' key={`help.${i}`}>
                     {getCommandDescriptions().map((commandWithInfo: string, j: number) => {
                       const commandName = commandWithInfo.split(' - ')[0];
-                      return (
-                        <div className='flex-row' key={`cmd.${i}.${j}`}>
-                          <TypedText key={`cmd.name.${i}.${j}`} text={`${commandName} `} type="command" />
-                          <TypedText key={`cmd.description.${i}.${j}`} text={` -> ${commandDescriptions[commandName]}`} />
-                        </div>
-                      )
+                      if (command.shouldBeTyped) {
+                        return (
+                          <div className='flex-row' key={`cmd.${i}.${j}`}>
+                            <TypedText key={`cmd.name.${i}.${j}`} text={`${commandName} `} type="command" />
+                            <TypedText key={`cmd.description.${i}.${j}`} text={` -> ${commandDescriptions[commandName]}`} />
+                          </div>
+                        )
+                      } else {
+                        return (
+                          <div className='flex-row' key={`cmd.${i}.${j}`}>
+                            <span key={`cmd.name.${i}.${j}`} className='text-command'>{`${commandName}`}</span>
+                            <span key={`cmd.description.${i}.${j}`}>{` -> ${commandDescriptions[commandName]}`}</span>
+                          </div>
+                        )
+                      }
                     })
                     }
                   </div>
                 </div>
               )
             default:
-              if (!commands[command]) {
-                const errorMsg = getErrorMsg(command);
-                return (
-                  <div key={i}>
-                    <ExecutedCommandText text={command} type="command" />
-                    <TypedText text={errorMsg} type="error" speed={85} />
-                  </div>
-                )
-              } else if (typeof commands[command]() === 'string') {
-                const regex = /https?:\/\/[^\s]+/g;
-                const resultText: string = commands[command]();
-                const regexMatches = resultText.match(regex);
-                if (regexMatches) {
-                  const link = regexMatches[0]
+              if (!commands[command.value]) {
+                const errorMsg = getErrorMsg(command.value);
+                if (command.shouldBeTyped) {
                   return (
                     <div key={i}>
-                      <ExecutedCommandText text={command} type="command" />
-                      <TypedText text={resultText.split(link)[0]} />
-                      <div onClick={() => handleLinkClick(link)} className="hoverable-div">
-                        <TypedText text={link} type="link" />
-                      </div>
+                      <ExecutedCommandText text={command.value} type="command" />
+                      <TypedText text={errorMsg} type="error" speed={85} />
+                    </div>
+                  )
+                } else {
+                  return (
+                    <div key={i}>
+                      <ExecutedCommandText text={command.value} type="command" />
+                      <span className='text-error'>{errorMsg}</span>
                     </div>
                   )
                 }
+              } else if (typeof commands[command.value]() === 'string') {
+                const regex = /https?:\/\/[^\s]+/g;
+                const resultText: string = commands[command.value]();
+                const regexMatches = resultText.match(regex);
+                if (regexMatches) {
+                  const link = regexMatches[0]
+                  if (command.shouldBeTyped) {
+                    return (
+                      <div key={i}>
+                        <ExecutedCommandText text={command.value} type="command" />
+                        <TypedText text={resultText.split(link)[0]} />
+                        <div onClick={() => handleLinkClick(link)} className="hoverable-div">
+                          <TypedText text={link} type="link" />
+                        </div>
+                      </div>
+                    )
+                  } else {
+                    return (
+                      <div key={i} className='flex-col'>
+                        <ExecutedCommandText text={command.value} type="command" />
+                        <span>{resultText.split(link)[0]}</span>
+                        <div onClick={() => handleLinkClick(link)} className="hoverable-div">
+                          <span className='text-link'>{link}</span>
+                        </div>
+                      </div>
+                    )
+                  }
+                }
                 else {
-                  return (
-                    <div key={i}>
-                      <ExecutedCommandText text={command} type="command" />
-                      {resultText.length > 250 ? (
-                        <TypedText text={resultText} speed={80} />
-                      ) : (
-                        <TypedText text={resultText} />
-                      )
-                      }
-                    </div>
-                  )
+                  if (command.shouldBeTyped) {
+                    return (
+                      <div key={i}>
+                        <ExecutedCommandText text={command.value} type="command" />
+                        {resultText.length > 250 ? (
+                          <TypedText text={resultText} speed={80} />
+                        ) : (
+                          <TypedText text={resultText} />
+                        )
+                        }
+                      </div>
+                    )
+                  } else {
+                    return (
+                      <div key={i} className='flex-col'>
+                        <ExecutedCommandText text={command.value} type="command" />
+                        <span>{resultText}</span>
+                      </div>
+                    )
+                  }
                 }
               } else {
                 return (

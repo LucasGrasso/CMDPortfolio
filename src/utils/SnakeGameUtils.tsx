@@ -1,4 +1,5 @@
 import { Directions, Position } from "./SnakeTypes";
+import { getRandomPosition } from "./SnakeUtils";
 
 const snakeIsEating = (snakeHead: Position, food: Position) => {
     return snakeHead.x === food.x && snakeHead.y === food.y;
@@ -31,5 +32,14 @@ const getNewSnakeHead = (snake: Position[], direction: string): Position => {
     }
 }
 
-export { snakeIsEating, snakeIsEatingItself, snakeIsOutOfBound, getNewSnakeHead };
+const generateFood = (snake: Position[], width: number, height: number): Position => {
+    const food: Position = getRandomPosition(width, height);
+    if (snake.some((snakePart) => snakePart.x === food.x && snakePart.y === food.y)) {
+        return generateFood(snake, width, height);
+    }
+    return food;
+}
+
+
+export { snakeIsEating, snakeIsEatingItself, snakeIsOutOfBound, getNewSnakeHead, generateFood };
 

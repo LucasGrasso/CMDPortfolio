@@ -64,14 +64,19 @@ pre {
 }
 
 .project {
-    /* border-style: solid;
-    border-width: 0.1rem;
-    border-color: #AEAEAE;
-    border-radius: 0.5rem; */
     display: flex;
     flex-direction: column;
     justify-content: center;
     gap: 0.5rem;
+    padding-bottom: 1rem;
+    padding-top: 0.5rem;
+}
+
+.project-notTypable {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    gap: 0.1rem;
     padding-bottom: 1rem;
     padding-top: 0.5rem;
 }

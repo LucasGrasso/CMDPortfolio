@@ -1,9 +1,9 @@
 import { disableBodyScroll, enableBodyScroll } from 'body-scroll-lock';
 import { useEffect, useState } from 'react';
 import '../snake.css';
-import { getNewSnakeHead, snakeIsEating, snakeIsEatingItself, snakeIsOutOfBound } from '../utils/SnakeGameUtils';
+import { generateFood, getNewSnakeHead, snakeIsEating, snakeIsEatingItself, snakeIsOutOfBound } from '../utils/SnakeGameUtils';
 import { Directions, Position, TableStateDict } from '../utils/SnakeTypes';
-import { getRandomPosition, getRandomPositionString, parsePosition, stringifyPosition } from '../utils/SnakeUtils';
+import { getRandomPositionString, parsePosition, stringifyPosition } from '../utils/SnakeUtils';
 
 type SnakeGameProps = {
     width: number;
@@ -63,10 +63,7 @@ export default function SnakeGame({ width, height, startGameCallback, endGameCal
 
     const snakeEat = (snakeBody: Position[]) => {
         const snakeHead: Position = snakeBody[0];
-        let newFoodPosition: Position = getRandomPosition(width, height);
-        while (snakeBody.includes(newFoodPosition)) {
-            newFoodPosition = getRandomPosition(width, height);
-        }
+        let newFoodPosition: Position = generateFood(snakeBody, width, height);
         setFoodState(newFoodPosition);
         setScore(score + 1);
         setSnakeState([snakeHead].concat(snakeState));
@@ -185,6 +182,13 @@ export default function SnakeGame({ width, height, startGameCallback, endGameCal
     }, []);
 
     useEffect(() => {
+        window.addEventListener('keydown', handleKeyDown);
+        return () => {
+            window.removeEventListener('keydown', handleKeyDown);
+        }
+    }, [handleKeyDown]);
+
+    useEffect(() => {
         const highScoreInt: number = parseInt(highScore);
         if (score > highScoreInt) {
             setHighScore(score.toString());
@@ -222,7 +226,7 @@ export default function SnakeGame({ width, height, startGameCallback, endGameCal
         setTouchEndY(e.targetTouches[0].clientY)
     }
 
-    const onTouchEnd = (e: React.TouchEvent<HTMLDivElement>) => {
+    const onTouchEnd = (e: any) => {
         e.preventDefault()
         if (!touchStartX || !touchEndX || !touchStartY || !touchEndY) return
         const distanceX = touchStartX - touchEndX
@@ -243,14 +247,21 @@ export default function SnakeGame({ width, height, startGameCallback, endGameCal
         }
     }
 
+
+
+    useEffect(() => {
+        window.addEventListener('touchend', onTouchEnd);
+        return () => window.removeEventListener('touchend', onTouchEnd);
+    }, [onTouchEnd]);
+
     return (
-        <div onTouchStart={(e: React.TouchEvent<HTMLDivElement>) => { onTouchStart(e) }} onTouchMove={(e: React.TouchEvent<HTMLDivElement>) => { onTouchMove(e) }} onTouchEnd={(e: React.TouchEvent<HTMLDivElement>) => { onTouchEnd(e) }}>
+        <div onTouchStart={(e: React.TouchEvent<HTMLDivElement>) => { onTouchStart(e) }} onTouchMove={(e: React.TouchEvent<HTMLDivElement>) => { onTouchMove(e) }}>
             {
                 gameOver ? (
                     <div className='flex-col'>
                         <span className='text-error'>Game Over</span>
                         <span>Score: {score}</span>
-                        {score > parseInt(originalHighScore) && <h4 className='text-green'>¡Nuevo Record!</h4>}
+                        {score > parseInt(originalHighScore) && <span className='text-green'>¡Nuevo Record!</span>}
                         <span>High Score: {highScore}</span>
                     </div>
                 ) : (
