@@ -36,21 +36,25 @@ const Console: React.FC = () => {
     const key = e.key; // "ArrowRight", "ArrowLeft", "ArrowUp", or "ArrowDown"
     const arrowUpPressed: boolean = key === "ArrowUp"
     const arrowDownPressed: boolean = key === "ArrowDown"
-    const arrowLeftPressed: boolean = key === "ArrowLeft"
-    const arrowRightPressed: boolean = key === "ArrowRight"
-    const enterPressed: boolean = key === "Enter"
-    if (arrowUpPressed && document.activeElement === inputElement.current) {
-      e.view.event.preventDefault();
-      if (count + 1 > history.length) return;
-      setInput(history[history.length - (count + 1)].value);
-      setCount(count + 1);
-    } else if (arrowDownPressed && document.activeElement === inputElement.current) {
-      e.view.event.preventDefault();
-      if (count - 1 < 0) return;
-      setInput(history[history.length - (count - 1)].value);
-      setCount(count - 1);
-    } else if (!arrowDownPressed && !arrowUpPressed && !arrowLeftPressed && !arrowRightPressed && !enterPressed) {
-      inputElement.current?.focus();
+    if (!Object.values(isSnakeActive).includes(true)) {
+      if (arrowUpPressed && document.activeElement === inputElement.current) {
+        e.view.event.preventDefault();
+        if (count + 1 > history.length) return;
+        setInput(history[history.length - (count + 1)].value);
+        setCount(count + 1);
+      } else if (arrowDownPressed && document.activeElement === inputElement.current) {
+        e.view.event.preventDefault();
+        console.log(count)
+        if (count - 1 <= 0) {
+          setInput('');
+          return;
+        };
+        const newInput = history[history.length - (count - 1)].value || '';
+        setInput(newInput);
+        setCount(count - 1);
+      } else {
+        inputElement.current?.focus();
+      }
     }
   }
 
