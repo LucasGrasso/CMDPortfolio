@@ -12,7 +12,7 @@ const Console: React.FC = () => {
     value: string,
     shouldBeTyped: boolean
   }
-  const [history, setHistory] = useState<HistoryText[]>(JSON.parse(localStorage.getItem('history') || '[]').filter((i: string) => i !== 'snake'));
+  const [history, setHistory] = useState<HistoryText[]>(JSON.parse(localStorage.getItem('history') || '[]').filter((i: HistoryText) => i.value !== 'snake'));
   const [input, setInput] = useState('');
   const [count, setCount] = useState(0);
   const inputElement = useRef<HTMLInputElement>(null);
@@ -20,9 +20,6 @@ const Console: React.FC = () => {
   useEffect(() => {
     const newHistory = history.map(
       (command: HistoryText) => {
-        if (command.value === 'snake') {
-          return {}
-        }
         return { value: command.value, shouldBeTyped: false }
       }
     )
