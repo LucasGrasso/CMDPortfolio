@@ -237,6 +237,7 @@ const Console: React.FC = () => {
             type="text"
             value={input}
             onChange={(e) => setInput(e.target.value)}
+            onBlur={() => setCount(0)}
           />
         </div>
       </form>
