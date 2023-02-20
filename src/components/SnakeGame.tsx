@@ -8,9 +8,11 @@ import { getRandomPosition, getRandomPositionString, parsePosition, stringifyPos
 type SnakeGameProps = {
     width: number;
     height: number;
+    startGameCallback: () => void;
+    endGameCallback: () => void;
 }
 
-export default function SnakeGame({ width, height }: SnakeGameProps) {
+export default function SnakeGame({ width, height, startGameCallback, endGameCallback }: SnakeGameProps) {
     const [tableState, setTableState] = useState<TableStateDict>({} as TableStateDict);
     const [score, setScore] = useState<number>(0);
     const [highScore, setHighScore] = useState<string>(JSON.parse(localStorage.getItem('highscore') || '0'));
@@ -59,8 +61,12 @@ export default function SnakeGame({ width, height }: SnakeGameProps) {
         }
     }
 
-    const snakeEat = (snakeHead: Position) => {
-        const newFoodPosition: Position = getRandomPosition(width, height);
+    const snakeEat = (snakeBody: Position[]) => {
+        const snakeHead: Position = snakeBody[0];
+        let newFoodPosition: Position = getRandomPosition(width, height);
+        while (snakeBody.includes(newFoodPosition)) {
+            newFoodPosition = getRandomPosition(width, height);
+        }
         setFoodState(newFoodPosition);
         setScore(score + 1);
         setSnakeState([snakeHead].concat(snakeState));
@@ -87,7 +93,7 @@ export default function SnakeGame({ width, height }: SnakeGameProps) {
                     setGameOver(true);
                 }
                 if (snakeIsEating(newSnakeHeadUp, foodState)) {
-                    snakeEat(newSnakeHeadUp);
+                    snakeEat(newSnakeUp);
                 } else {
                     const newSnakeTail = newSnakeUp[newSnakeUp.length - 1];
                     setSnakeState
@@ -107,7 +113,7 @@ export default function SnakeGame({ width, height }: SnakeGameProps) {
                     setGameOver(true);
                 }
                 if (snakeIsEating(newSnakeHeadDown, foodState)) {
-                    snakeEat(newSnakeHeadDown);
+                    snakeEat(newSnakeDown);
                 } else {
                     const newSnakeTail = newSnakeDown[newSnakeDown.length - 1];
                     setTableState({
@@ -126,7 +132,7 @@ export default function SnakeGame({ width, height }: SnakeGameProps) {
                     setGameOver(true);
                 }
                 if (snakeIsEating(newSnakeHeadLeft, foodState)) {
-                    snakeEat(newSnakeHeadLeft);
+                    snakeEat(newSnakeLeft);
                 } else {
                     const newSnakeTail = newSnakeLeft[newSnakeLeft.length - 1];
                     setTableState({
@@ -145,7 +151,7 @@ export default function SnakeGame({ width, height }: SnakeGameProps) {
                     setGameOver(true);
                 }
                 if (snakeIsEating(newSnakeHeadRight, foodState)) {
-                    snakeEat(newSnakeHeadRight);
+                    snakeEat(newSnakeRight);
                 } else {
                     const newSnakeTail = newSnakeRight[newSnakeRight.length - 1];
                     setTableState({
@@ -169,6 +175,7 @@ export default function SnakeGame({ width, height }: SnakeGameProps) {
     }, [direction, tableState]);
 
     useEffect(() => {
+        startGameCallback();
         setInitialState();
         window.addEventListener('keydown', handleKeyDown);
         disableBodyScroll(document.getElementById('divConsole')!);
@@ -183,6 +190,7 @@ export default function SnakeGame({ width, height }: SnakeGameProps) {
             setHighScore(score.toString());
         }
         if (gameOver) {
+            endGameCallback();
             enableBodyScroll(document.getElementById('divConsole')!);
             localStorage.setItem('highscore', JSON.stringify(highScore));
         }
@@ -240,10 +248,10 @@ export default function SnakeGame({ width, height }: SnakeGameProps) {
             {
                 gameOver ? (
                     <div className='flex-col'>
-                        <h1 className='text-error'>Game Over</h1>
-                        <h3>Score: {score}</h3>
+                        <span className='text-error'>Game Over</span>
+                        <span>Score: {score}</span>
                         {score > parseInt(originalHighScore) && <h4 className='text-green'>¡Nuevo Record!</h4>}
-                        <h3>High Score: {highScore}</h3>
+                        <span>High Score: {highScore}</span>
                     </div>
                 ) : (
                     <div className='snake-container' key="snake-container">

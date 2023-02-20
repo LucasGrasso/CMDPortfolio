@@ -60,6 +60,22 @@ const Console: React.FC = () => {
     setInput('');
   };
 
+  //i want to disable touch input on mobile devices when the snake game is active
+
+  interface SnakeInstances {
+    [key: number]: boolean
+  }
+
+  const [isSnakeActive, setIsSnakeActive] = useState<SnakeInstances>({});
+
+  useEffect(() => {
+    if (Object.values(isSnakeActive).includes(true)) {
+      document.body.style.touchAction = 'none';
+    } else {
+      document.body.style.touchAction = 'auto';
+    }
+  }, [isSnakeActive]);
+
   return (
     <div className="mx-auto p-20 font-mono text-center sm:text-left" id='divConsole'>
       <pre className="text-left font-mono">
@@ -80,6 +96,12 @@ const Console: React.FC = () => {
                 </div>
               )
             case 'snake':
+              const startGameCallback = () => {
+                setIsSnakeActive({ ...isSnakeActive, [i]: true });
+              }
+              const endGameCallback = () => {
+                setIsSnakeActive({ ...isSnakeActive, [i]: false });
+              }
               window.scrollTo(0, document.body.scrollHeight);
               if (window.innerWidth > 768) {
                 inputElement.current?.blur();
@@ -87,7 +109,7 @@ const Console: React.FC = () => {
               return (
                 <div key={i}>
                   <ExecutedCommandText text={command} type="command" />
-                  <SnakeGame width={10} height={10} />
+                  <SnakeGame width={10} height={10} startGameCallback={startGameCallback} endGameCallback={endGameCallback} />
                 </div>
               )
             case "help":
