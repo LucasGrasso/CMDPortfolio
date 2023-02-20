@@ -126,6 +126,10 @@ pre {
     color: #F9F1A5;
 }
 
+.text-input-previous-command {
+    color: #F9F1A5 !important;
+}
+
 .text-green {
     color: #7BE748;
 }
@@ -133,11 +137,6 @@ pre {
 .text-input-command {
     width: 100%;
     outline: none;
-}
-
-.text-input-command:before {
-    color: #F9F1A5;
-    content: var(--command);
 }
 
 .text-blue {

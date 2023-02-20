@@ -1,5 +1,5 @@
 import { handleLinkClick } from '../utils/ConsoleUtils';
-import { projectInfo } from '../utils/constants';
+import { projectsInfo } from '../utils/constants';
 import TypedText from './TypedText';
 
 type Props = {
@@ -8,9 +8,9 @@ type Props = {
 };
 
 export default function Project({ name, shouldBeTyped }: Props) {
-    if (!projectInfo[name]) return (<div></div>);
+    if (!projectsInfo[name]) return (<div></div>);
 
-    const project = projectInfo[name];
+    const project = projectsInfo[name];
     if (shouldBeTyped) {
         return (
             <div className="project">

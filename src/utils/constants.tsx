@@ -24,7 +24,7 @@ interface projectInformation {
     };
 }
 
-const projectInfo: projectInformation = {
+const projectsInfo: projectInformation = {
     "Zerti": {
         "description": "Zerti es un proyecto Web3 cuyo objetivo central es asegurar la validez y confianza de las certificaciones basándose en la inmutabilidad y transparencia de la tecnología blockchain",
         "role": "Co-founder, CEO, Blockchain & Full-Stack Developer, UI/UX Designer",
@@ -39,6 +39,11 @@ const projectInfo: projectInformation = {
         "description": "Finalista de concurso INNOVAR 2021 & 2022. Bajo basado en laseres y botones. Finalista de INNOVAR bajo la categoria Producto innovador.",
         "role": "Hardware and Software Developer",
         "url": "https://github.com/LucasGrasso/Stringless"
+    },
+    "Snake": {
+        "description": "Juego de la serpiente hecho en React.js",
+        "role": "Front-end developer, UI/UX Designer",
+        "url": "https://snake.lucasgrasso.com.ar/",
     },
     "Orthix": {
         "description": "Finalista de concurso INNOVAR 2021 Categoria Colegios Secundarios. Orthix es la union entre los mundos de la solidaridad, la IA, la impresion 3D y la ortopedia.",
@@ -59,5 +64,5 @@ const getErrorMsg = (command: string) => {
 }
 
 
-export { banner, projectInfo, getErrorMsg };
+export { banner, projectsInfo, getErrorMsg };
 

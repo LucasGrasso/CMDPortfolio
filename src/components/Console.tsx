@@ -1,25 +1,23 @@
 import React, { useEffect, useRef, useState } from 'react';
 import { commandDescriptions, commands, getCommandDescriptions } from '../utils/commands';
-import { handleLinkClick } from '../utils/ConsoleUtils';
-import { banner, getErrorMsg, projectInfo } from '../utils/constants';
+import { handleLinkClick, HistoryCommand, SnakeInstances } from '../utils/ConsoleUtils';
+import { banner, getErrorMsg, projectsInfo } from '../utils/constants';
 import ExecutedCommandText from './ExecutedCommandText';
 import Project from './Project';
 import SnakeGame from './SnakeGame';
 import TypedText from './TypedText';
 
 const Console: React.FC = () => {
-  interface HistoryText {
-    value: string,
-    shouldBeTyped: boolean
-  }
-  const [history, setHistory] = useState<HistoryText[]>(JSON.parse(localStorage.getItem('history') || '[]').filter((i: HistoryText) => i.value !== 'snake'));
-  const [input, setInput] = useState('');
-  const [count, setCount] = useState(0);
+  const [history, setHistory] = useState<HistoryCommand[]>(JSON.parse(localStorage.getItem('history') || '[]').filter((i: HistoryCommand) => i.value !== 'snake'));
+  const [input, setInput] = useState<string>('');
+  const [count, setCount] = useState<number>(0);
   const inputElement = useRef<HTMLInputElement>(null);
+  const [previousInputIsCommand, setPreviousInputIsCommand] = useState<boolean>(false);
+  const [isSnakeActive, setIsSnakeActive] = useState<SnakeInstances>({});
 
   useEffect(() => {
     const newHistory = history.map(
-      (command: HistoryText) => {
+      (command: HistoryCommand) => {
         return { value: command.value, shouldBeTyped: false }
       }
     )
@@ -32,6 +30,15 @@ const Console: React.FC = () => {
     commands['clear'] = () => { setHistory([]); return "" };
   }, []);
 
+  useEffect(() => {
+    if (Object.values(isSnakeActive).includes(true)) {
+      document.body.style.touchAction = 'none';
+    } else {
+      document.body.style.touchAction = 'auto';
+    }
+  }, [isSnakeActive]);
+
+
   const handleKeyDown = (e: any) => {
     const key = e.key; // "ArrowRight", "ArrowLeft", "ArrowUp", or "ArrowDown"
     const arrowUpPressed: boolean = key === "ArrowUp"
@@ -40,18 +47,22 @@ const Console: React.FC = () => {
       if (arrowUpPressed && document.activeElement === inputElement.current) {
         e.view.event.preventDefault();
         if (count + 1 > history.length) return;
+        setPreviousInputIsCommand(true);
         setInput(history[history.length - (count + 1)].value);
         setCount(count + 1);
       } else if (arrowDownPressed && document.activeElement === inputElement.current) {
         e.view.event.preventDefault();
         if (count - 1 <= 0) {
+          setPreviousInputIsCommand(false);
           setInput('');
           return;
         };
+        setPreviousInputIsCommand(true);
         const newInput = history[history.length - (count - 1)].value || '';
         setInput(newInput);
         setCount(count - 1);
       } else {
+        setPreviousInputIsCommand(false);
         inputElement.current?.focus();
       }
     }
@@ -62,37 +73,20 @@ const Console: React.FC = () => {
     return () => {
       window.removeEventListener('keydown', handleKeyDown);
     }
-  }, [count, inputElement]);
+  }, [handleKeyDown]);
 
   const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     if (!input) return;
     e.preventDefault();
-    const command = input.split(' ')[0];
     setHistory([...history, { value: input, shouldBeTyped: true }]);
     setInput('');
   };
-
-  //i want to disable touch input on mobile devices when the snake game is active
-
-  interface SnakeInstances {
-    [key: number]: boolean
-  }
-
-  const [isSnakeActive, setIsSnakeActive] = useState<SnakeInstances>({});
-
-  useEffect(() => {
-    if (Object.values(isSnakeActive).includes(true)) {
-      document.body.style.touchAction = 'none';
-    } else {
-      document.body.style.touchAction = 'auto';
-    }
-  }, [isSnakeActive]);
 
   return (
     <div className="mx-auto p-20 font-mono text-center sm:text-left" id='divConsole'>
       <pre className="text-left font-mono">
         <p key="banner"> <span className="wrapped"><span className='text-green'>Lucas Grasso Ramos 1.0.0</span> - Made with <span className='text-blue'>React.js</span></span><span>{`\n ${banner} \n`}</span>type <span className='text-command'>"help"</span> for a list of commands</p>
-        {history.map((command: HistoryText, i: number) => {
+        {history.map((command: HistoryCommand, i: number) => {
           switch (command.value) {
             case "proyectos":
               return (
@@ -100,7 +94,7 @@ const Console: React.FC = () => {
                   <ExecutedCommandText text={command.value} type="command" />
                   <div className='project-container'>
                     {
-                      Object.keys(projectInfo).map((projectName: string, j: number) => {
+                      Object.keys(projectsInfo).map((projectName: string, j: number) => {
                         return <Project key={`project.${j}`} name={projectName} shouldBeTyped={command.shouldBeTyped} />
                       })
                     }
@@ -232,12 +226,15 @@ const Console: React.FC = () => {
           <ExecutedCommandText type="default" />
           <input
             autoFocus
-            className="ml-10 flex-grow-1 p-2 text-input-command"
+            className={`ml-10 flex-grow-1 p-2 text-input-command ${previousInputIsCommand ? 'text-input-previous-command' : ''}`}
             ref={inputElement}
             type="text"
             value={input}
             onChange={(e) => setInput(e.target.value)}
-            onBlur={() => setCount(0)}
+            onBlur={() => {
+              setPreviousInputIsCommand(false);
+              setCount(0);
+            }}
           />
         </div>
       </form>
