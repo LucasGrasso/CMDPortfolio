@@ -44,7 +44,6 @@ const Console: React.FC = () => {
         setCount(count + 1);
       } else if (arrowDownPressed && document.activeElement === inputElement.current) {
         e.view.event.preventDefault();
-        console.log(count)
         if (count - 1 <= 0) {
           setInput('');
           return;
