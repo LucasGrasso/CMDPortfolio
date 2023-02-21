@@ -8,7 +8,7 @@ type Props = {
   callback?: () => void
 }
 
-const TypedText = ({ text, type = "", speed = 75, callback = () => { } }: Props) => {
+const TypedText = ({ text, type = "", speed = 80, callback = () => { } }: Props) => {
   switch (type) {
     case "error":
       return (

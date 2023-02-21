@@ -26,8 +26,8 @@ export default function Project({ name, shouldBeTyped }: Props) {
         return (
             <div className="project">
                 <span className='text-title'>{name}</span>
-                <span>{project.description}</span>
-                <span>{project.role}</span>
+                <span className='wrapped'>{project.description}</span>
+                <span className='wrapped'>{project.role}</span>
                 <div onClick={() => handleLinkClick(project.url)} className="hoverable-div">
                     <span className='text-link'>Visitar Sitio web</span>
                 </div>

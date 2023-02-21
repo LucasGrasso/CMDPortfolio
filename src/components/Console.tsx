@@ -2,32 +2,33 @@ import React, { useEffect, useRef, useState } from 'react';
 import { commandDescriptions, commands, getCommandDescriptions } from '../utils/commands';
 import { handleLinkClick, HistoryCommand, SnakeInstances } from '../utils/ConsoleUtils';
 import { banner, getErrorMsg, projectsInfo } from '../utils/constants';
+import scrollToWindowBottom from '../utils/scrollToBottom';
 import ExecutedCommandText from './ExecutedCommandText';
 import Project from './Project';
 import SnakeGame from './SnakeGame';
 import TypedText from './TypedText';
 
 const Console: React.FC = () => {
-  const [history, setHistory] = useState<HistoryCommand[]>(JSON.parse(localStorage.getItem('history') || '[]').filter((i: HistoryCommand) => i.value !== 'snake'));
+  const [commandHistory, setCommandHistory] = useState<HistoryCommand[]>(JSON.parse(localStorage.getItem('history') || '[]').filter((i: HistoryCommand) => i.value !== 'snake'));
   const [input, setInput] = useState<string>('');
-  const [count, setCount] = useState<number>(0);
+  const [commandHistoryCount, setCommandHistoryCount] = useState<number>(0);
   const inputElement = useRef<HTMLInputElement>(null);
   const [previousInputIsCommand, setPreviousInputIsCommand] = useState<boolean>(false);
   const [isSnakeActive, setIsSnakeActive] = useState<SnakeInstances>({});
 
   useEffect(() => {
-    const newHistory = history.map(
+    const newHistory = commandHistory.map(
       (command: HistoryCommand) => {
         return { value: command.value, shouldBeTyped: false }
       }
     )
     localStorage.setItem('history', JSON.stringify(newHistory));
     window.scrollTo(0, document.body.scrollHeight);
-    setCount(0)
-  }, [history]);
+    setCommandHistoryCount(0)
+  }, [commandHistory]);
 
   useEffect(() => {
-    commands['clear'] = () => { setHistory([]); return "" };
+    commands['clear'] = () => { setCommandHistory([]); return "" };
   }, []);
 
   useEffect(() => {
@@ -40,29 +41,30 @@ const Console: React.FC = () => {
 
 
   const handleKeyDown = (e: any) => {
-    const key = e.key; // "ArrowRight", "ArrowLeft", "ArrowUp", or "ArrowDown"
+    const key = e.key;
     const arrowUpPressed: boolean = key === "ArrowUp"
     const arrowDownPressed: boolean = key === "ArrowDown"
     if (!Object.values(isSnakeActive).includes(true)) {
       if (arrowUpPressed && document.activeElement === inputElement.current) {
         e.view.event.preventDefault();
-        if (count + 1 > history.length) return;
+        if (commandHistoryCount + 1 > commandHistory.length) return;
         setPreviousInputIsCommand(true);
-        setInput(history[history.length - (count + 1)].value);
-        setCount(count + 1);
+        setInput(commandHistory[commandHistory.length - (commandHistoryCount + 1)].value);
+        setCommandHistoryCount(commandHistoryCount + 1);
       } else if (arrowDownPressed && document.activeElement === inputElement.current) {
         e.view.event.preventDefault();
-        if (count - 1 <= 0) {
+        if (commandHistoryCount - 1 <= 0) {
           setPreviousInputIsCommand(false);
           setInput('');
           return;
         };
         setPreviousInputIsCommand(true);
-        const newInput = history[history.length - (count - 1)].value || '';
+        const newInput = commandHistory[commandHistory.length - (commandHistoryCount - 1)].value || '';
         setInput(newInput);
-        setCount(count - 1);
+        setCommandHistoryCount(commandHistoryCount - 1);
       } else {
         setPreviousInputIsCommand(false);
+        scrollToWindowBottom();
         inputElement.current?.focus();
       }
     }
@@ -78,7 +80,7 @@ const Console: React.FC = () => {
   const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     if (!input) return;
     e.preventDefault();
-    setHistory([...history, { value: input, shouldBeTyped: true }]);
+    setCommandHistory([...commandHistory, { value: input, shouldBeTyped: true }]);
     setInput('');
   };
 
@@ -86,7 +88,7 @@ const Console: React.FC = () => {
     <div className="mx-auto p-20 font-mono text-center sm:text-left" id='divConsole'>
       <pre className="text-left font-mono">
         <p key="banner"> <span className="wrapped"><span className='text-green'>Lucas Grasso Ramos 1.0.0</span> - Made with <span className='text-blue'>React.js</span></span><span>{`\n ${banner} \n`}</span>type <span className='text-command'>"help"</span> for a list of commands</p>
-        {history.map((command: HistoryCommand, i: number) => {
+        {commandHistory.map((command: HistoryCommand, i: number) => {
           switch (command.value) {
             case "proyectos":
               return (
@@ -103,7 +105,7 @@ const Console: React.FC = () => {
               )
             case 'snake':
               const startGameCallback = () => {
-                window.scrollTo(0, document.body.scrollHeight);
+                scrollToWindowBottom();
                 setIsSnakeActive({ ...isSnakeActive, [i]: true });
                 inputElement.current?.blur();
               }
@@ -151,7 +153,7 @@ const Console: React.FC = () => {
                   return (
                     <div key={i}>
                       <ExecutedCommandText text={command.value} type="command" />
-                      <TypedText text={errorMsg} type="error" speed={85} />
+                      <TypedText text={errorMsg} type="error" speed={90} />
                     </div>
                   )
                 } else {
@@ -196,7 +198,7 @@ const Console: React.FC = () => {
                       <div key={i}>
                         <ExecutedCommandText text={command.value} type="command" />
                         {resultText.length > 250 ? (
-                          <TypedText text={resultText} speed={80} />
+                          <TypedText text={resultText} speed={85} />
                         ) : (
                           <TypedText text={resultText} />
                         )
@@ -207,7 +209,7 @@ const Console: React.FC = () => {
                     return (
                       <div key={i} className='flex-col'>
                         <ExecutedCommandText text={command.value} type="command" />
-                        <span>{resultText}</span>
+                        <span className='wrapped'>{resultText}</span>
                       </div>
                     )
                   }
@@ -232,8 +234,9 @@ const Console: React.FC = () => {
             onChange={(e) => setInput(e.target.value)}
             onBlur={() => {
               setPreviousInputIsCommand(false);
-              setCount(0);
+              setCommandHistoryCount(0);
             }}
+            onFocus={() => setCommandHistoryCount(0)}
           />
         </div>
       </form>
