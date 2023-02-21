@@ -15,6 +15,7 @@ const Console: React.FC = () => {
   const inputElement = useRef<HTMLInputElement>(null);
   const [previousInputIsCommand, setPreviousInputIsCommand] = useState<boolean>(false);
   const [isSnakeActive, setIsSnakeActive] = useState<SnakeInstances>({});
+  const [files, setFiles] = useState<string[]>([]);
 
   useEffect(() => {
     const newHistory = commandHistory.map(
@@ -29,6 +30,17 @@ const Console: React.FC = () => {
 
   useEffect(() => {
     commands['clear'] = () => { setCommandHistory([]); return "" };
+  }, []);
+
+  useEffect(() => {
+    async function getGithubFiles() {
+      const res = await fetch('https://api.github.com/repos/LucasGrasso/CMDPortfolio/contents/src/');
+      const data = await res.json();
+      const fileNames: string[] = data.map((file: any) => file.name);
+      setFiles(fileNames);
+      return
+    };
+    if (files.length === 0) getGithubFiles();
   }, []);
 
   useEffect(() => {
@@ -103,6 +115,48 @@ const Console: React.FC = () => {
                   </div>
                 </div>
               )
+            case 'ls':
+              if (!files.length) return <ExecutedCommandText key={`cmd.${i}`} text={command.value} type="command" />
+              if (command.shouldBeTyped) {
+                return (
+                  <div key={i}>
+                    <ExecutedCommandText key={`cmd.${i}`} text={command.value} type="command" />
+                    <div className='flex-col'>
+                      <span className='text-green'>Mode  Name</span>
+                      <span className='text-green'>----  ----</span>
+                      {
+                        files.map((fileName: string, j: number) => {
+                          if (fileName.split('.').length === 1) {
+                            return <TypedText key={`ls.${i}.${j}`} text={`d-r-- ${fileName}`} />
+                          } else {
+                            return <TypedText key={`ls.${i}.${j}`} text={`-a--- ${fileName}`} />
+                          }
+                        })
+                      }
+                    </div>
+                  </div>
+                )
+              } else {
+                return (
+                  <div key={i}>
+                    <ExecutedCommandText key={`cmd.${i}`} text={command.value} type="command" />
+                    <div className='flex-col'>
+                      <span className='text-green'>Mode  Name</span>
+                      <span className='text-green'>----  ----</span>
+                      {
+                        files.map((fileName: string, j: number) => {
+                          if (fileName.split('.').length === 1) {
+                            return <span key={`ls.${i}.${j}`}>{`d-r-- ${fileName}`}</span>
+                          } else {
+                            return <span key={`ls.${i}.${j}`}>{`-a--- ${fileName}`}</span>
+                          }
+                        })
+                      }
+                    </div>
+                  </div>
+                )
+              }
+
             case 'snake':
               const startGameCallback = () => {
                 scrollToWindowBottom();

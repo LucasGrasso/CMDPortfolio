@@ -1,4 +1,3 @@
-
 interface Command {
     [key: string]: () => string;
 }
@@ -20,6 +19,7 @@ const commandDescriptions: CommandDescription = {
     'date': 'Le dice la fecha.',
     'clear': 'Limpia la consola.',
     'repo': 'Repositorio de este proyecto.',
+    'ls': 'Lista los archivos del directorio actual.',
 };
 
 const commands: Command = {
@@ -35,6 +35,7 @@ const commands: Command = {
     'snake': () => 'snake',
     'clear': () => 'clear',
     'repo': () => 'Link al repositorio de github: https://github.com/LucasGrasso/CMDPortfolio',
+    'ls': () => 'ls',
 };
 
 const getCommandDescriptions = () => {
