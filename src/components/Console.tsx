@@ -30,13 +30,13 @@ const Console: React.FC = () => {
     commands['clear'] = () => { setHistory([]); return "" };
   }, []);
 
-  /* useEffect(() => {
+  useEffect(() => {
     if (Object.values(isSnakeActive).includes(true)) {
       document.body.style.touchAction = 'none';
     } else {
       document.body.style.touchAction = 'auto';
     }
-  }, [isSnakeActive]); */
+  }, [isSnakeActive]);
 
 
   const handleKeyDown = (e: any) => {
@@ -106,10 +106,8 @@ const Console: React.FC = () => {
                 window.scrollTo(0, document.body.scrollHeight);
                 setIsSnakeActive({ ...isSnakeActive, [i]: true });
                 inputElement.current?.blur();
-                document.body.style.touchAction = 'none';
               }
               const endGameCallback = () => {
-                document.body.style.touchAction = 'auto';
                 inputElement.current?.focus();
                 setIsSnakeActive({ ...isSnakeActive, [i]: false });
               }
