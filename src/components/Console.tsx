@@ -32,6 +32,15 @@ const Console: React.FC = () => {
     commands['clear'] = () => { setCommandHistory([]); return "" };
   }, []);
 
+
+  useEffect(() => {
+    if (Object.values(isSnakeActive).includes(true)) {
+      document.body.style.touchAction = 'none';
+    } else {
+      document.body.style.touchAction = 'auto';
+    }
+  }, [isSnakeActive]);
+
   const handleKeyDown = (e: any) => {
     const key = e.key;
     const arrowUpPressed: boolean = key === "ArrowUp"
@@ -95,6 +104,7 @@ const Console: React.FC = () => {
                   </div>
                 </div>
               )
+              
             case 'ls':
               if (command.shouldBeTyped) {
                 return (
@@ -138,7 +148,6 @@ const Console: React.FC = () => {
                   </div>
                 )
               }
-
             case 'snake':
               const startGameCallback = () => {
                 scrollToWindowBottom();
