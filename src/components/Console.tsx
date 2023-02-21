@@ -104,13 +104,10 @@ const Console: React.FC = () => {
             case 'snake':
               const startGameCallback = () => {
                 setIsSnakeActive({ ...isSnakeActive, [i]: true });
+                window.scrollTo(0, document.body.scrollHeight);
               }
               const endGameCallback = () => {
                 setIsSnakeActive({ ...isSnakeActive, [i]: false });
-              }
-              window.scrollTo(0, document.body.scrollHeight);
-              if (window.innerWidth > 768) {
-                inputElement.current?.blur();
               }
               return (
                 <div key={i}>
