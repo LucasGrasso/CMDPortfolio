@@ -2,6 +2,7 @@ import React, { useEffect, useRef, useState } from 'react';
 import { commandDescriptions, commands, getCommandDescriptions } from '../utils/commands';
 import { handleLinkClick, HistoryCommand, SnakeInstances } from '../utils/ConsoleUtils';
 import { banner, getErrorMsg, projectsInfo } from '../utils/constants';
+import { files, getFormattedDirectories } from '../utils/files';
 import scrollToWindowBottom from '../utils/scrollToBottom';
 import ExecutedCommandText from './ExecutedCommandText';
 import Project from './Project';
@@ -31,6 +32,7 @@ const Console: React.FC = () => {
     commands['clear'] = () => { setCommandHistory([]); return "" };
   }, []);
 
+
   useEffect(() => {
     if (Object.values(isSnakeActive).includes(true)) {
       document.body.style.touchAction = 'none';
@@ -38,7 +40,6 @@ const Console: React.FC = () => {
       document.body.style.touchAction = 'auto';
     }
   }, [isSnakeActive]);
-
 
   const handleKeyDown = (e: any) => {
     const key = e.key;
@@ -103,6 +104,50 @@ const Console: React.FC = () => {
                   </div>
                 </div>
               )
+              
+            case 'ls':
+              if (command.shouldBeTyped) {
+                return (
+                  <div key={i}>
+                    <ExecutedCommandText key={`cmd.${i}`} text={command.value} type="command" />
+                    <div className='flex-col'>
+                      <span className='text-green'>Mode  Name</span>
+                      <span className='text-green'>----  ----</span>
+                      {
+                        files["tree"].map((fileObj, j: number) => {
+                          const fileName: string = getFormattedDirectories(fileObj.path)
+                          console.log(fileName)
+                          if (fileName.split('.').length === 1) {
+                            return <TypedText key={`ls.${i}.${j}`} text={`d-r-- ${fileName}`} type='no-wrap'></TypedText>
+                          } else {
+                            return <TypedText key={`ls.${i}.${j}`} text={`-a--- ${fileName}`} type='no-wrap'></TypedText>
+                          }
+                        })
+                      }
+                    </div>
+                  </div>
+                )
+              } else {
+                return (
+                  <div key={i}>
+                    <ExecutedCommandText key={`cmd.${i}`} text={command.value} type="command" />
+                    <div className='flex-col'>
+                      <span className='text-green'>Mode  Name</span>
+                      <span className='text-green'>----  ----</span>
+                      {
+                        files["tree"].map((fileObj, j: number) => {
+                          const fileName: string = getFormattedDirectories(fileObj.path)
+                          if (fileName.split('.').length === 1) {
+                            return <span key={`ls.${i}.${j}`}>{`d-r-- ${fileName}`}</span>
+                          } else {
+                            return <span key={`ls.${i}.${j}`}>{`-a--- ${fileName}`}</span>
+                          }
+                        })
+                      }
+                    </div>
+                  </div>
+                )
+              }
             case 'snake':
               const startGameCallback = () => {
                 scrollToWindowBottom();
