@@ -104,9 +104,11 @@ const Console: React.FC = () => {
             case 'snake':
               const startGameCallback = () => {
                 setIsSnakeActive({ ...isSnakeActive, [i]: true });
+                inputElement.current?.blur();
                 window.scrollTo(0, document.body.scrollHeight);
               }
               const endGameCallback = () => {
+                inputElement.current?.focus();
                 setIsSnakeActive({ ...isSnakeActive, [i]: false });
               }
               return (
