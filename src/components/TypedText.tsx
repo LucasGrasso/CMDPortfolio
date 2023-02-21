@@ -66,6 +66,19 @@ const TypedText = ({ text, type = "", speed = 80, callback = () => { } }: Props)
           className="text-link"
         />
       );
+    case "no-wrap":
+      return (
+        <TypeAnimation
+          sequence={[
+            text,
+            callback,
+          ]}
+          wrapper="div"
+          cursor={false}
+          repeat={0}
+          speed={speed}
+        />
+      );
     default:
       return (
         <TypeAnimation

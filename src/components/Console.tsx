@@ -2,6 +2,7 @@ import React, { useEffect, useRef, useState } from 'react';
 import { commandDescriptions, commands, getCommandDescriptions } from '../utils/commands';
 import { handleLinkClick, HistoryCommand, SnakeInstances } from '../utils/ConsoleUtils';
 import { banner, getErrorMsg, projectsInfo } from '../utils/constants';
+import { files, getFormattedDirectories } from '../utils/files';
 import scrollToWindowBottom from '../utils/scrollToBottom';
 import ExecutedCommandText from './ExecutedCommandText';
 import Project from './Project';
@@ -15,7 +16,6 @@ const Console: React.FC = () => {
   const inputElement = useRef<HTMLInputElement>(null);
   const [previousInputIsCommand, setPreviousInputIsCommand] = useState<boolean>(false);
   const [isSnakeActive, setIsSnakeActive] = useState<SnakeInstances>({});
-  const [files, setFiles] = useState<string[]>([]);
 
   useEffect(() => {
     const newHistory = commandHistory.map(
@@ -31,26 +31,6 @@ const Console: React.FC = () => {
   useEffect(() => {
     commands['clear'] = () => { setCommandHistory([]); return "" };
   }, []);
-
-  useEffect(() => {
-    async function getGithubFiles() {
-      const res = await fetch('https://api.github.com/repos/LucasGrasso/CMDPortfolio/contents/src/');
-      const data = await res.json();
-      const fileNames: string[] = data.map((file: any) => file.name);
-      setFiles(fileNames);
-      return
-    };
-    if (files.length === 0) getGithubFiles();
-  }, []);
-
-  useEffect(() => {
-    if (Object.values(isSnakeActive).includes(true)) {
-      document.body.style.touchAction = 'none';
-    } else {
-      document.body.style.touchAction = 'auto';
-    }
-  }, [isSnakeActive]);
-
 
   const handleKeyDown = (e: any) => {
     const key = e.key;
@@ -116,7 +96,6 @@ const Console: React.FC = () => {
                 </div>
               )
             case 'ls':
-              if (!files.length) return <ExecutedCommandText key={`cmd.${i}`} text={command.value} type="command" />
               if (command.shouldBeTyped) {
                 return (
                   <div key={i}>
@@ -125,11 +104,13 @@ const Console: React.FC = () => {
                       <span className='text-green'>Mode  Name</span>
                       <span className='text-green'>----  ----</span>
                       {
-                        files.map((fileName: string, j: number) => {
+                        files["tree"].map((fileObj, j: number) => {
+                          const fileName: string = getFormattedDirectories(fileObj.path)
+                          console.log(fileName)
                           if (fileName.split('.').length === 1) {
-                            return <TypedText key={`ls.${i}.${j}`} text={`d-r-- ${fileName}`} />
+                            return <TypedText key={`ls.${i}.${j}`} text={`d-r-- ${fileName}`} type='no-wrap'></TypedText>
                           } else {
-                            return <TypedText key={`ls.${i}.${j}`} text={`-a--- ${fileName}`} />
+                            return <TypedText key={`ls.${i}.${j}`} text={`-a--- ${fileName}`} type='no-wrap'></TypedText>
                           }
                         })
                       }
@@ -144,7 +125,8 @@ const Console: React.FC = () => {
                       <span className='text-green'>Mode  Name</span>
                       <span className='text-green'>----  ----</span>
                       {
-                        files.map((fileName: string, j: number) => {
+                        files["tree"].map((fileObj, j: number) => {
+                          const fileName: string = getFormattedDirectories(fileObj.path)
                           if (fileName.split('.').length === 1) {
                             return <span key={`ls.${i}.${j}`}>{`d-r-- ${fileName}`}</span>
                           } else {
