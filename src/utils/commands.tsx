@@ -1,47 +1,46 @@
 
 interface Command {
-    [key: string]: () => string;
+	[key: string]: () => string;
 }
 
 interface CommandDescription {
-    [key: string]: string;
+	[key: string]: string;
 }
 
 const commandDescriptions: CommandDescription = {
-    'help': 'Lista los comandos disponibles.',
-    /* 'greet': 'Lo saluda.', */
-    'info': 'Cuenta un poco sobre mi.',
-    'proyectos': 'Muestra mis proyectos.',
-    'contacto': 'Información de Contacto.',
-    'linkedin': 'Mi perfil de LinkedIn.',
-    'github': 'Mi perfil de GitHub.',
-    'estudios': 'Mis Estudios.',
-    'snake': 'Juego de la serpiente.',
-    'date': 'Le dice la fecha.',
-    'clear': 'Limpia la consola.',
-    'repo': 'Repositorio de este proyecto.',
+	'help': 'Lists all the available commands.',
+	'info': 'Tells a little about myself.',
+	'projects': 'Shows my projects.',
+	'contact': 'Contact Information.',
+	'linkedin': 'My LinkedIn profile.',
+	'github': 'My GitHub profile.',
+	'studies': 'My Studies.',
+	'snake': 'Snake game.',
+	'date': 'Tells the date.',
+	'clear': 'Clears the console.',
+	'repo': 'Repository of this project.',
+	'ls': 'Lists the files in the current directory.'
 };
 
 const commands: Command = {
-    'help': () => `help`,
-    /* 'greet': () => 'Bienvenido a mi Portfolio Conceptual.', */
-    'info': () => 'Soy Lucas Grasso Ramos, Estudiante de Ciencias de Datos y desarrollador de Software. Desde pequeño fui atraído por las ciencias naturales y la tecnología, y hoy en día trato de canalizar esa pasión con la programación. Soy un desarrollador especializado en Solidity, Python y TypeScript, pero interesado por todas las tecnologías exponenciales, especialmente todo lo relacionado a Blockchain e IA.',
-    'proyectos': () => 'proyectos',
-    'estudios': () => 'Estudiante de Ciencias de Datos en la Universidad De Buenos Aires (UBA), Facultad de Ciencias Exactas y Naturales. Egresado de ORT TIC (Tecnologias de la Información y la Comunicacion) 2022.',
-    'contacto': () => 'Sigamos en contacto! Mi correo electronico es lucasgrassoramos@gmail.com',
-    'linkedin': () => 'Mi perfil de Linkedin es: https://www.linkedin.com/in/lucas-grasso-ramos/',
-    'github': () => 'Mi perfil de Github es: https://github.com/LucasGrasso',
-    'date': () => new Date().toString(),
-    'snake': () => 'snake',
-    'clear': () => 'clear',
-    'repo': () => 'Link al repositorio de github: https://github.com/LucasGrasso/CMDPortfolio',
+	'help': () => `help`,
+	'info': () => 'I am Lucas Grasso Ramos, a Data Science student and software developer. Since I was young, I have been fascinated by natural sciences and technology, and nowadays I try to channel that passion through programming. I specialize in Solidity, TypeScript and Python, but Im interested in all exponential technologies, especially everything related to Blockchain and AI.',
+	'projects': () => 'projects',
+	'studies': () => 'Data Science student at Universidad De Buenos Aires (UBA), Faculty of Exact and Natural Sciences. Graduated from ORT TIC (Information and Communication Technologies) in 2022.',
+	'contact': () => 'Let\'s stay in touch! My email address is lucasgrassoramos@gmail.com',
+	'linkedin': () => 'My Linkedin profile: https://www.linkedin.com/in/lucas-grasso-ramos/',
+	'github': () => 'My Github profile: https://github.com/LucasGrasso',
+	'date': () => new Date().toString(),
+	'snake': () => 'snake',
+	'clear': () => 'clear',
+	'repo': () => 'Link to github repo: https://github.com/LucasGrasso/CMDPortfolio',
 };
 
 const getCommandDescriptions = () => {
-    return Object.keys(commandDescriptions).map((command) => {
-        return `${command} - ${commandDescriptions[command]}`;
-    });
+	return Object.keys(commandDescriptions).map((command) => {
+		return `${command} - ${commandDescriptions[command]}`;
+	});
 };
 
-export { commands, commandDescriptions, getCommandDescriptions };
+export { commandDescriptions, commands, getCommandDescriptions };
 
