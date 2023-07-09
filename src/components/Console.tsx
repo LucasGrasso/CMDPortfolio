@@ -85,8 +85,8 @@ const Console: React.FC = () => {
 	}, [handleKeyDown]);
 
 	const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
-		if (!input) return;
 		e.preventDefault();
+		if (input === '') return;
 		setCommandHistory([...commandHistory, { value: input, shouldBeTyped: true }]);
 		setInput('');
 	};
@@ -127,7 +127,6 @@ const Console: React.FC = () => {
 												{
 													files["tree"].map((fileObj, j: number) => {
 														const fileName: string = getFormattedDirectories(fileObj.path)
-														console.log(fileName)
 														if (fileName.split('.').length === 1) {
 															return <TypedText key={`ls.${i}.${j}`} text={`d-r-- ${fileName}`} type='no-wrap'></TypedText>
 														} else {
@@ -272,7 +271,7 @@ const Console: React.FC = () => {
 									}
 								} else {
 									return (
-										<span></span>
+										<ExecutedCommandText text="" type="command" />
 									)
 								}
 						}
