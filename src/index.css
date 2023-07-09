@@ -48,6 +48,7 @@ body {
 	width: 90vw;
 	max-width: 1200px;
 	aspect-ratio: 16 / 9;
+	max-height: 90vh;
 	padding: 20px;
 	border-bottom-left-radius: 10px;
 	border-bottom-right-radius: 10px;
@@ -275,7 +276,17 @@ pre {
 
 	#divConsole {
 		aspect-ratio: 13 / 14;
-		height: 80vh;
+		height: 75vh;
+		max-height: 80vh;
+	}
+
+}
+
+@media (max-width: 1500px) {
+
+	#divConsole {
+		height: 75vh;
+		max-height: 80vh;
 	}
 
 }
