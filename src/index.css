@@ -1,158 +1,160 @@
+@import url('https://fonts.googleapis.com/css2?family=Inconsolata&display=swap');
+
 html,
 body {
-    scroll-behavior: smooth;
+	scroll-behavior: smooth;
 }
 
 @font-face {
-    font-family: 'DM Mono';
-    font-style: normal;
-    font-weight: 300;
-    font-display: swap;
-    src: url(https://fonts.gstatic.com/s/dmmono/v10/aFTU7PB1QTsUX8KYthqQBA.woff2) format('woff2');
-    unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+2000-206F, U+2074, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
+	font-family: 'Inconsolata';
+	font-style: normal;
+	font-weight: 300;
+	font-display: swap;
+	src: url(https://fonts.gstatic.com/s/dmmono/v10/aFTU7PB1QTsUX8KYthqQBA.woff2) format('woff2');
+	unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+2000-206F, U+2074, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
 }
 
 body {
-    background-color: #0C0C0C;
-    color: #AEAEAE;
-    overflow-y: auto;
-    overflow-x: hidden;
-    font-family: "DM Mono", monospace;
-    font-size: clamp(0.7rem, 3.5vw, 1rem);
+	background-color: #0C0C0C;
+	color: #AEAEAE;
+	overflow-y: auto;
+	overflow-x: hidden;
+	font-family: "Inconsolata", monospace;
+	font-size: clamp(0.7rem, 3.5vw, 1rem);
 }
 
 #root {
-    padding-bottom: 15%;
+	padding-bottom: 15%;
 }
 
 input[type="text"] {
-    background-color: transparent;
-    border: 0px;
-    outline: none;
-    -webkit-box-shadow: none;
-    -moz-box-shadow: none;
-    box-shadow: none;
-    color: #AEAEAE;
-    font-family: "DM Mono", monospace;
-    font-size: clamp(0.7rem, 3.5vw, 1rem);
+	background-color: transparent;
+	border: 0px;
+	outline: none;
+	-webkit-box-shadow: none;
+	-moz-box-shadow: none;
+	box-shadow: none;
+	color: #AEAEAE;
+	font-family: "Inconsolata", monospace;
+	font-size: clamp(0.7rem, 3.5vw, 1rem);
 }
 
 body::-webkit-scrollbar {
-    width: 0.25rem;
-    background-color: #0C0C0C;
+	width: 0.25rem;
+	background-color: #0C0C0C;
 }
 
 body::-webkit-scrollbar-thumb {
-    background-color: #AEAEAE;
-    border-radius: 1rem;
+	background-color: #AEAEAE;
+	border-radius: 1rem;
 }
 
 body::-webkit-scrollbar-track {
-    background-color: #0C0C0C;
+	background-color: #0C0C0C;
 }
 
 img {
-    height: 1rem;
-    width: 1rem;
-    border-radius: 1rem;
+	height: 1rem;
+	width: 1rem;
+	border-radius: 1rem;
 }
 
 pre {
-    font-family: "DM Mono", monospace;
-    color: #AEAEAE;
-    font-size: clamp(0.7rem, 3.5vw, 1rem);
+	font-family: "Inconsolata", monospace;
+	color: #AEAEAE;
+	font-size: clamp(0.7rem, 3.5vw, 1rem);
 }
 
 .project {
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    gap: 0.5rem;
-    padding-bottom: 1rem;
-    padding-top: 0.5rem;
+	display: flex;
+	flex-direction: column;
+	justify-content: center;
+	gap: 0.5rem;
+	padding-bottom: 1rem;
+	padding-top: 0.5rem;
 }
 
 .project-notTypable {
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    gap: 0.1rem;
-    padding-bottom: 1rem;
-    padding-top: 0.5rem;
+	display: flex;
+	flex-direction: column;
+	justify-content: center;
+	gap: 0.1rem;
+	padding-bottom: 1rem;
+	padding-top: 0.5rem;
 }
 
 .project-container {
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
+	display: flex;
+	flex-direction: column;
+	justify-content: center;
 }
 
 .help-container {
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
+	display: flex;
+	flex-direction: column;
+	justify-content: center;
 }
 
 .flex-row {
-    display: flex;
-    flex-direction: row;
-    justify-content: left;
-    align-items: center;
+	display: flex;
+	flex-direction: row;
+	justify-content: left;
+	align-items: center;
 }
 
 .flex-col {
-    display: flex;
-    flex-direction: column;
-    justify-content: left;
-    align-items: left;
+	display: flex;
+	flex-direction: column;
+	justify-content: left;
+	align-items: left;
 }
 
 .wrapped {
-    display: block;
-    white-space: normal;
+	display: block;
+	white-space: normal;
 }
 
 .hoverable-div {
-    cursor: pointer;
+	cursor: pointer;
 }
 
 .text-error {
-    color: #E74856;
-    display: block;
-    white-space: normal;
+	color: #E74856;
+	display: block;
+	white-space: normal;
 }
 
 .text-command {
-    color: #F9F1A5;
+	color: #F9F1A5;
 }
 
 .text-input-previous-command {
-    color: #F9F1A5 !important;
+	color: #F9F1A5 !important;
 }
 
 .text-green {
-    color: #7BE748;
+	color: #7BE748;
 }
 
 .text-input-command {
-    width: 100%;
-    outline: none;
+	width: 100%;
+	outline: none;
 }
 
 .text-blue {
-    color: #48C1E7;
+	color: #48C1E7;
 }
 
 .text-link {
-    color: #48C1E7;
-    text-decoration: underline;
-    display: block;
-    white-space: normal;
+	color: #48C1E7;
+	text-decoration: underline;
+	display: block;
+	white-space: normal;
 }
 
 .text-title {
-    font-weight: 600;
-    color: #AEAEAE;
-    display: block;
-    white-space: normal;
+	font-weight: 600;
+	color: #AEAEAE;
+	display: block;
+	white-space: normal;
 }
