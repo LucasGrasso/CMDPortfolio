@@ -19,7 +19,7 @@ const commandDescriptions: CommandDescription = {
 	'date': 'Tells the date.',
 	'clear': 'Clears the console.',
 	'repo': 'Repository of this project.',
-	'ls': 'Lists the files in the current directory.'
+	'ls': 'Lists files.'
 };
 
 const commands: Command = {

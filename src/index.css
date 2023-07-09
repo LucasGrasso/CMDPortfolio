@@ -3,6 +3,9 @@
 html,
 body {
 	scroll-behavior: smooth;
+	margin: 0;
+	padding: 0;
+	overflow: hidden;
 }
 
 @font-face {
@@ -15,16 +18,116 @@ body {
 }
 
 body {
+	font-family: "Inconsolata", monospace;
+	font-size: clamp(0.7rem, 3.5vw, 1rem);
+	background-size: cover;
+	background-repeat: no-repeat;
+	height: 100vh;
+	display: flex;
+	justify-content: center;
+	align-items: center;
+}
+
+#consoleWrapper {
+	display: flex;
+	flex-direction: column;
+	justify-content: center;
+	align-items: left;
+	background-color: rgba(51, 51, 51, 0.95);
+	border-radius: 9px;
+	padding-top: 0.5%;
+}
+
+#divConsole {
 	background-color: #0C0C0C;
 	color: #AEAEAE;
-	overflow-y: auto;
+	overflow-y: overlay;
 	overflow-x: hidden;
 	font-family: "Inconsolata", monospace;
 	font-size: clamp(0.7rem, 3.5vw, 1rem);
+	width: 90vw;
+	max-width: 1200px;
+	aspect-ratio: 16 / 9;
+	padding: 20px;
+	border-bottom-left-radius: 10px;
+	border-bottom-right-radius: 10px;
+	box-sizing: border-box;
 }
 
-#root {
-	padding-bottom: 15%;
+#tab {
+	background-color: #0C0C0C;
+	color: white;
+	width: fit-content;
+	border-top-left-radius: 0.6rem;
+	border-top-right-radius: 0.6rem;
+	padding: 0.75%;
+	padding-left: 1.2%;
+	display: flex;
+	align-items: center;
+	justify-content: left;
+	gap: 0.25em;
+	font-family: system-ui;
+	font-size: clamp(0.5rem, 3vw, 0.8rem);
+	font-weight: 350;
+	margin-left: 2%;
+	white-space: pre;
+}
+
+#icon {
+	width: 1em;
+	height: 1em;
+}
+
+
+#divConsole::-webkit-scrollbar {
+	width: calc(0.25rem + 8px);
+	background-color: transparent;
+}
+
+#divConsole::-webkit-scrollbar-thumb {
+	background-color: #AEAEAE;
+	border: 4px solid transparent;
+	border-radius: 1rem;
+	background-clip: content-box;
+}
+
+#divConsole::-webkit-scrollbar-track {
+	background-color: transparent;
+}
+
+#divConsole::-webkit-scrollbar-track-piece:start {
+	margin-top: 2px;
+}
+
+#divConsole::-webkit-scrollbar-track-piece:end {
+	margin-bottom: 2px;
+}
+
+.attributions {
+	position: absolute;
+	display: flex;
+	justify-content: space-between;
+	bottom: 0;
+	left: 0;
+	width: 100vw;
+	gap: 10px;
+	flex-wrap: wrap;
+}
+
+#googleEarthView,
+#attribution {
+	width: fit-content;
+	background-color: rgba(255, 255, 255, 0.75);
+	padding: 10px;
+	display: flex;
+	gap: 10px;
+	font-weight: bold;
+	border-radius: 2px;
+	font-size: 0.9rem;
+}
+
+#googleEarthView a {
+	color: #013481;
 }
 
 input[type="text"] {
@@ -37,20 +140,6 @@ input[type="text"] {
 	color: #AEAEAE;
 	font-family: "Inconsolata", monospace;
 	font-size: clamp(0.7rem, 3.5vw, 1rem);
-}
-
-body::-webkit-scrollbar {
-	width: 0.25rem;
-	background-color: #0C0C0C;
-}
-
-body::-webkit-scrollbar-thumb {
-	background-color: #AEAEAE;
-	border-radius: 1rem;
-}
-
-body::-webkit-scrollbar-track {
-	background-color: #0C0C0C;
 }
 
 img {
@@ -157,4 +246,36 @@ pre {
 	color: #AEAEAE;
 	display: block;
 	white-space: normal;
+}
+
+@media (max-width: 730px) {
+
+	body {
+		align-items: start;
+		padding-top: 20px;
+	}
+
+	#divConsole {
+		aspect-ratio: 13 / 18;
+	}
+
+	#consoleWrapper {
+		height: 75vh;
+	}
+
+	#attribution,
+	#googleEarthView {
+		width: 100vw;
+		font-size: 0.7rem;
+	}
+
+}
+
+@media (max-width: 900px) {
+
+	#divConsole {
+		aspect-ratio: 13 / 14;
+		height: 80vh;
+	}
+
 }

@@ -1,12 +1,15 @@
-async function scrollToWindowBottom(): Promise<void> {
-    const previousScrollPosition = window.pageYOffset;
-    window.scrollTo(0, document.body.scrollHeight);
+async function scrollToConsoleBottom(consoleContainer: HTMLDivElement | null): Promise<void> {
+	if (!consoleContainer) return;
+	const previousScrollPosition = consoleContainer.scrollTop;
+	console.log("previousScrollPosition", previousScrollPosition);
+	console.log("scrollTop", consoleContainer.scrollTop);
+	consoleContainer.scrollTo(0, consoleContainer.scrollHeight);
 
-    await new Promise(resolve => setTimeout(resolve, 500));
+	await new Promise(resolve => setTimeout(resolve, 500));
 
-    if (previousScrollPosition !== window.pageYOffset) {
-        await scrollToWindowBottom();
-    }
+	if (previousScrollPosition !== consoleContainer.scrollTop) {
+		await scrollToConsoleBottom(consoleContainer);
+	}
 }
 
-export default scrollToWindowBottom;
+export default scrollToConsoleBottom;
