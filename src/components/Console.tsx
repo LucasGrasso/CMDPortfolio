@@ -32,7 +32,7 @@ const Console: React.FC = () => {
 	}, [commandHistory]);
 
 	useEffect(() => {
-		commands['clear'] = () => { setCommandHistory([]); return "" };
+		commands['clear'] = setCommandHistory([]);
 	}, []);
 
 
@@ -86,7 +86,7 @@ const Console: React.FC = () => {
 
 	const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
 		e.preventDefault();
-		if (input === '') return;
+		/* if (input === '') return; */
 		setCommandHistory([...commandHistory, { value: input, shouldBeTyped: true }]);
 		setInput('');
 	};
@@ -202,7 +202,9 @@ const Console: React.FC = () => {
 									</div>
 								)
 							default:
-								if (!commands[command.value]) {
+								if (command.value === 'clear') {
+									setCommandHistory([]);
+								} else if (!commands[command.value] && command.value !== '') {
 									const errorMsg = getErrorMsg(command.value);
 									if (command.shouldBeTyped) {
 										return (
@@ -219,9 +221,10 @@ const Console: React.FC = () => {
 											</div>
 										)
 									}
-								} else if (typeof commands[command.value]() === 'string') {
+								} else if (typeof commands[command.value] === 'string') {
 									const regex = /https?:\/\/[^\s]+/g;
-									const resultText: string = commands[command.value]();
+									const resultText = commands[command.value];
+									if (typeof resultText !== 'string') return null;
 									const regexMatches = resultText.match(regex);
 									if (regexMatches) {
 										const link = regexMatches[0]
@@ -269,9 +272,11 @@ const Console: React.FC = () => {
 											)
 										}
 									}
-								} else {
+								} else if (command.value === '') {
 									return (
-										<ExecutedCommandText text="" type="command" />
+										<div key={i}>
+											<ExecutedCommandText text="" type="command" />
+										</div>
 									)
 								}
 						}
