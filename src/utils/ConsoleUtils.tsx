@@ -1,10 +1,10 @@
 
 const handleLinkClick = (link: string) => {
-    var anchor = document.createElement('a');
-    anchor.href = link;
-    anchor.target = "_blank";
-    anchor.click();
-}
+	const anchor = document.createElement("a");
+	anchor.href = link;
+	anchor.target = "_blank";
+	anchor.click();
+};
 
 interface HistoryCommand {
     value: string,

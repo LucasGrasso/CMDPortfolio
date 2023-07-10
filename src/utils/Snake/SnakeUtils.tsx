@@ -7,13 +7,13 @@ const getRandomDirection = () => {
 		randomDirection = directions[Math.floor(Math.random() * directions.length)];
 	}
 	return randomDirection;
-}
+};
 
 function getRandomPosition(width: number, height: number): Position {
 	return {
 		x: Math.floor(Math.random() * width),
 		y: Math.floor(Math.random() * height)
-	}
+	};
 }
 
 function getRandomPositionString(width: number, height: number): string {
@@ -25,11 +25,11 @@ function stringifyPosition(position: Position): string {
 }
 
 function parsePosition(position: string): Position {
-	const [x, y] = position.split(',');
+	const [x, y] = position.split(",");
 	return {
 		x: parseInt(x),
 		y: parseInt(y)
-	}
+	};
 }
 
 

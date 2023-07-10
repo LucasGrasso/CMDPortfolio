@@ -1,18 +1,18 @@
-import React, { useEffect, useRef, useState } from 'react';
-import Icon from '../assets/Icon';
-import { HistoryCommand, SnakeInstances, handleLinkClick } from '../utils/ConsoleUtils';
-import { commandDescriptions, commands, getCommandDescriptions } from '../utils/commands';
-import { banner, getErrorMsg, projectsInfo } from '../utils/constants';
-import { files, getFormattedDirectories } from '../utils/files';
-import scrollToConsoleBottom from '../utils/scrollToBottom';
-import ExecutedCommandText from './ExecutedCommandText';
-import Project from './Project';
-import SnakeGame from './SnakeGame';
-import TypedText from './TypedText';
+import React, { useEffect, useRef, useState } from "react";
+import Icon from "../assets/Icon";
+import { HistoryCommand, SnakeInstances, handleLinkClick } from "../utils/ConsoleUtils";
+import { commandDescriptions, commands, getCommandDescriptions } from "../utils/commands";
+import { banner, getErrorMsg, projectsInfo } from "../utils/constants";
+import { files, getFormattedDirectories } from "../utils/files";
+import scrollToConsoleBottom from "../utils/scrollToBottom";
+import ExecutedCommandText from "./ExecutedCommandText";
+import Project from "./Project";
+import SnakeGame from "./SnakeGame";
+import TypedText from "./TypedText";
 
 const Console: React.FC = () => {
-	const [commandHistory, setCommandHistory] = useState<HistoryCommand[]>(JSON.parse(localStorage.getItem('history') || '[]').filter((i: HistoryCommand) => i.value !== 'snake'));
-	const [input, setInput] = useState<string>('');
+	const [commandHistory, setCommandHistory] = useState<HistoryCommand[]>(JSON.parse(localStorage.getItem("history") || "[]").filter((i: HistoryCommand) => i.value !== "snake"));
+	const [input, setInput] = useState<string>("");
 	const [commandHistoryCount, setCommandHistoryCount] = useState<number>(0);
 	const inputElement = useRef<HTMLInputElement>(null);
 	const [previousInputIsCommand, setPreviousInputIsCommand] = useState<boolean>(false);
@@ -23,32 +23,32 @@ const Console: React.FC = () => {
 	useEffect(() => {
 		const newHistory = commandHistory.map(
 			(command: HistoryCommand) => {
-				return { value: command.value, shouldBeTyped: false }
+				return { value: command.value, shouldBeTyped: false };
 			}
-		)
-		localStorage.setItem('history', JSON.stringify(newHistory));
+		);
+		localStorage.setItem("history", JSON.stringify(newHistory));
 		scrollToConsoleBottom(consoleContainer.current);
-		setCommandHistoryCount(0)
+		setCommandHistoryCount(0);
 	}, [commandHistory]);
 
 	useEffect(() => {
-		commands['clear'] = setCommandHistory([]);
+		commands["clear"] = setCommandHistory([]);
 	}, []);
 
 
 	useEffect(() => {
 		if (!consoleContainer.current) return;
 		if (Object.values(isSnakeActive).includes(true)) {
-			consoleContainer.current.style.touchAction = 'none';
+			consoleContainer.current.style.touchAction = "none";
 		} else {
-			consoleContainer.current.style.touchAction = 'auto';
+			consoleContainer.current.style.touchAction = "auto";
 		}
 	}, [isSnakeActive, consoleContainer]);
 
 	const handleKeyDown = (e: any) => {
 		const key = e.key;
-		const arrowUpPressed: boolean = key === "ArrowUp"
-		const arrowDownPressed: boolean = key === "ArrowDown"
+		const arrowUpPressed: boolean = key === "ArrowUp";
+		const arrowDownPressed: boolean = key === "ArrowDown";
 		if (!Object.values(isSnakeActive).includes(true)) {
 			if (arrowUpPressed && document.activeElement === inputElement.current) {
 				e.view.event.preventDefault();
@@ -60,11 +60,11 @@ const Console: React.FC = () => {
 				e.view.event.preventDefault();
 				if (commandHistoryCount - 1 <= 0) {
 					setPreviousInputIsCommand(false);
-					setInput('');
+					setInput("");
 					return;
-				};
+				}
 				setPreviousInputIsCommand(true);
-				const newInput = commandHistory[commandHistory.length - (commandHistoryCount - 1)].value || '';
+				const newInput = commandHistory[commandHistory.length - (commandHistoryCount - 1)].value || "";
 				setInput(newInput);
 				setCommandHistoryCount(commandHistoryCount - 1);
 			} else {
@@ -75,20 +75,30 @@ const Console: React.FC = () => {
 		} else {
 			e.preventDefault();
 		}
-	}
+	};
 
 	useEffect(() => {
-		window.addEventListener('keydown', handleKeyDown);
+		window.addEventListener("keydown", handleKeyDown);
 		return () => {
-			window.removeEventListener('keydown', handleKeyDown);
-		}
+			window.removeEventListener("keydown", handleKeyDown);
+		};
 	}, [handleKeyDown]);
 
 	const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
 		e.preventDefault();
 		/* if (input === '') return; */
 		setCommandHistory([...commandHistory, { value: input, shouldBeTyped: true }]);
-		setInput('');
+		setInput("");
+	};
+
+	const startGameCallback = (i: number) => {
+		scrollToConsoleBottom(consoleContainer.current);
+		setIsSnakeActive({ ...isSnakeActive, [i]: true });
+		inputElement.current?.blur();
+	};
+	const endGameCallback = (i: number) => {
+		inputElement.current?.focus();
+		setIsSnakeActive({ ...isSnakeActive, [i]: false });
 	};
 
 	return (
@@ -99,9 +109,10 @@ const Console: React.FC = () => {
 			</div>
 			<div ref={consoleContainer} className="mx-auto p-20 font-mono text-center sm:text-left" id='divConsole'>
 				<pre className="text-left font-mono">
-					<p key="banner"> <span className="wrapped"><span className='text-green'>Lucas Grasso Ramos 1.0.0</span> - Made with <span className='text-blue'>React.js</span></span><span>{`\n ${banner} \n`}</span>type <span className='text-command'>"help"</span> for a list of commands</p>
+					<p key="banner"> <span className="wrapped"><span className='text-green'>Lucas Grasso Ramos 1.0.0</span> - Made with <span className='text-blue'>React.js</span></span><span>{`\n ${banner} \n`}</span>type <span className='text-command'>&quot;help&quot;</span> for a list of commands</p>
 					{commandHistory.map((command: HistoryCommand, i: number) => {
 						switch (command.value) {
+
 							case "projects":
 								return (
 									<div key={i}>
@@ -109,14 +120,14 @@ const Console: React.FC = () => {
 										<div className='project-container'>
 											{
 												Object.keys(projectsInfo).map((projectName: string, j: number) => {
-													return <Project key={`project.${j}`} name={projectName} shouldBeTyped={command.shouldBeTyped} />
+													return <Project key={`project.${j}`} name={projectName} shouldBeTyped={command.shouldBeTyped} />;
 												})
 											}
 										</div>
 									</div>
-								)
+								);
 
-							case 'ls':
+							case "ls":
 								if (command.shouldBeTyped) {
 									return (
 										<div key={i}>
@@ -126,17 +137,17 @@ const Console: React.FC = () => {
 												<span className='text-green'>----  ----</span>
 												{
 													files["tree"].map((fileObj, j: number) => {
-														const fileName: string = getFormattedDirectories(fileObj.path)
-														if (fileName.split('.').length === 1) {
-															return <TypedText key={`ls.${i}.${j}`} text={`d-r-- ${fileName}`} type='no-wrap'></TypedText>
+														const fileName: string = getFormattedDirectories(fileObj.path);
+														if (fileName.split(".").length === 1) {
+															return <TypedText key={`ls.${i}.${j}`} text={`d-r-- ${fileName}`} type='no-wrap'></TypedText>;
 														} else {
-															return <TypedText key={`ls.${i}.${j}`} text={`-a--- ${fileName}`} type='no-wrap'></TypedText>
+															return <TypedText key={`ls.${i}.${j}`} text={`-a--- ${fileName}`} type='no-wrap'></TypedText>;
 														}
 													})
 												}
 											</div>
 										</div>
-									)
+									);
 								} else {
 									return (
 										<div key={i}>
@@ -146,65 +157,56 @@ const Console: React.FC = () => {
 												<span className='text-green'>----  ----</span>
 												{
 													files["tree"].map((fileObj, j: number) => {
-														const fileName: string = getFormattedDirectories(fileObj.path)
-														if (fileName.split('.').length === 1) {
-															return <span key={`ls.${i}.${j}`}>{`d-r-- ${fileName}`}</span>
+														const fileName: string = getFormattedDirectories(fileObj.path);
+														if (fileName.split(".").length === 1) {
+															return <span key={`ls.${i}.${j}`}>{`d-r-- ${fileName}`}</span>;
 														} else {
-															return <span key={`ls.${i}.${j}`}>{`-a--- ${fileName}`}</span>
+															return <span key={`ls.${i}.${j}`}>{`-a--- ${fileName}`}</span>;
 														}
 													})
 												}
 											</div>
 										</div>
-									)
+									);
 								}
-							case 'snake':
-								const startGameCallback = () => {
-									scrollToConsoleBottom(consoleContainer.current);
-									setIsSnakeActive({ ...isSnakeActive, [i]: true });
-									inputElement.current?.blur();
-								}
-								const endGameCallback = () => {
-									inputElement.current?.focus();
-									setIsSnakeActive({ ...isSnakeActive, [i]: false });
-								}
+							case "snake":
 								return (
 									<div key={i}>
 										<ExecutedCommandText text={command.value} type="command" />
-										<SnakeGame width={10} height={10} startGameCallback={startGameCallback} endGameCallback={endGameCallback} />
+										<SnakeGame width={10} height={10} startGameCallback={() => startGameCallback(i)} endGameCallback={() => endGameCallback(i)} />
 									</div>
-								)
+								);
 							case "help":
 								return (
 									<div key={i}>
 										<ExecutedCommandText key={`cmd.${i}`} text={command.value} type="command" />
 										<div className='help-container' key={`help.${i}`}>
 											{getCommandDescriptions().map((commandWithInfo: string, j: number) => {
-												const commandName = commandWithInfo.split(' - ')[0];
+												const commandName = commandWithInfo.split(" - ")[0];
 												if (command.shouldBeTyped) {
 													return (
 														<div className='flex-row' key={`cmd.${i}.${j}`}>
 															<TypedText key={`cmd.name.${i}.${j}`} text={`${commandName} `} type="command" />
 															<TypedText key={`cmd.description.${i}.${j}`} text={` -> ${commandDescriptions[commandName]}`} />
 														</div>
-													)
+													);
 												} else {
 													return (
 														<div className='flex-row' key={`cmd.${i}.${j}`}>
 															<span key={`cmd.name.${i}.${j}`} className='text-command'>{`${commandName}`}</span>
 															<span key={`cmd.description.${i}.${j}`}>{` -> ${commandDescriptions[commandName]}`}</span>
 														</div>
-													)
+													);
 												}
 											})
 											}
 										</div>
 									</div>
-								)
+								);
 							default:
-								if (command.value === 'clear') {
+								if (command.value === "clear") {
 									setCommandHistory([]);
-								} else if (!commands[command.value] && command.value !== '') {
+								} else if (!commands[command.value] && command.value !== "") {
 									const errorMsg = getErrorMsg(command.value);
 									if (command.shouldBeTyped) {
 										return (
@@ -212,22 +214,22 @@ const Console: React.FC = () => {
 												<ExecutedCommandText text={command.value} type="command" />
 												<TypedText text={errorMsg} type="error" speed={90} />
 											</div>
-										)
+										);
 									} else {
 										return (
 											<div key={i}>
 												<ExecutedCommandText text={command.value} type="command" />
 												<span className='text-error'>{errorMsg}</span>
 											</div>
-										)
+										);
 									}
-								} else if (typeof commands[command.value] === 'string') {
+								} else if (typeof commands[command.value] === "string") {
 									const regex = /https?:\/\/[^\s]+/g;
 									const resultText = commands[command.value];
-									if (typeof resultText !== 'string') return null;
+									if (typeof resultText !== "string") return null;
 									const regexMatches = resultText.match(regex);
 									if (regexMatches) {
-										const link = regexMatches[0]
+										const link = regexMatches[0];
 										if (command.shouldBeTyped) {
 											return (
 												<div key={i}>
@@ -237,7 +239,7 @@ const Console: React.FC = () => {
 														<TypedText text={link} type="link" />
 													</div>
 												</div>
-											)
+											);
 										} else {
 											return (
 												<div key={i} className='flex-col'>
@@ -247,7 +249,7 @@ const Console: React.FC = () => {
 														<span className='text-link'>{link}</span>
 													</div>
 												</div>
-											)
+											);
 										}
 									}
 									else {
@@ -262,22 +264,22 @@ const Console: React.FC = () => {
 													)
 													}
 												</div>
-											)
+											);
 										} else {
 											return (
 												<div key={i} className='flex-col'>
 													<ExecutedCommandText text={command.value} type="command" />
 													<span className='wrapped'>{resultText}</span>
 												</div>
-											)
+											);
 										}
 									}
-								} else if (command.value === '') {
+								} else if (command.value === "") {
 									return (
 										<div key={i}>
 											<ExecutedCommandText text="" type="command" />
 										</div>
-									)
+									);
 								}
 						}
 					})}
@@ -287,7 +289,7 @@ const Console: React.FC = () => {
 						<ExecutedCommandText type="default" />
 						<input
 							autoFocus
-							className={`ml-10 flex-grow-1 p-2 text-input-command ${previousInputIsCommand ? 'text-input-previous-command' : ''}`}
+							className={`ml-10 flex-grow-1 p-2 text-input-command ${previousInputIsCommand ? "text-input-previous-command" : ""}`}
 							ref={inputElement}
 							type="text"
 							value={input}
