@@ -293,7 +293,7 @@ const Console: React.FC = () => {
 							ref={inputElement}
 							type="text"
 							value={input}
-							onChange={(e) => setInput(e.target.value.trim())}
+							onChange={(e) => setInput(e.target.value.trimEnd())}
 							onBlur={() => {
 								setPreviousInputIsCommand(false);
 								setCommandHistoryCount(0);
